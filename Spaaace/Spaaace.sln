@@ -9,6 +9,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Hasnor_Network", "Hasnor_Ne
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Hasnor_Engine", "Hasnor_Engine\Hasnor_Engine.vcxproj", "{453F4A57-04CA-445E-B270-1A0CBF17DDB3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Spaaace_Client", "Spaaace_Client\Spaaace_Client.vcxproj", "{66350A18-C15A-4550-A281-E6EF43EF289C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Spaaace_Server", "Spaaace_Server\Spaaace_Server.vcxproj", "{DAFDA001-DDE1-47DE-94C2-ED0CC365DC06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -31,6 +35,14 @@ Global
 		{453F4A57-04CA-445E-B270-1A0CBF17DDB3}.Debug|Win32.Build.0 = Debug|Win32
 		{453F4A57-04CA-445E-B270-1A0CBF17DDB3}.Release|Win32.ActiveCfg = Release|Win32
 		{453F4A57-04CA-445E-B270-1A0CBF17DDB3}.Release|Win32.Build.0 = Release|Win32
+		{66350A18-C15A-4550-A281-E6EF43EF289C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{66350A18-C15A-4550-A281-E6EF43EF289C}.Debug|Win32.Build.0 = Debug|Win32
+		{66350A18-C15A-4550-A281-E6EF43EF289C}.Release|Win32.ActiveCfg = Release|Win32
+		{66350A18-C15A-4550-A281-E6EF43EF289C}.Release|Win32.Build.0 = Release|Win32
+		{DAFDA001-DDE1-47DE-94C2-ED0CC365DC06}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DAFDA001-DDE1-47DE-94C2-ED0CC365DC06}.Debug|Win32.Build.0 = Debug|Win32
+		{DAFDA001-DDE1-47DE-94C2-ED0CC365DC06}.Release|Win32.ActiveCfg = Release|Win32
+		{DAFDA001-DDE1-47DE-94C2-ED0CC365DC06}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
