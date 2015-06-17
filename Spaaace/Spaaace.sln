@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Spaaace", "Spaaace\Spaaace.vcxproj", "{2FD65259-0A03-475D-A693-8132F92268D0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Hasnor_Utils", "Hasnor_Utils\Hasnor_Utils.vcxproj", "{9B213836-DAC9-4C0A-83E0-54C218514F43}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Hasnor_Network", "Hasnor_Network\Hasnor_Network.vcxproj", "{2F167CA0-3724-4627-A61E-80968BE9E437}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Hasnor_Engine", "Hasnor_Engine\Hasnor_Engine.vcxproj", "{453F4A57-04CA-445E-B270-1A0CBF17DDB3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2FD65259-0A03-475D-A693-8132F92268D0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2FD65259-0A03-475D-A693-8132F92268D0}.Debug|Win32.Build.0 = Debug|Win32
+		{2FD65259-0A03-475D-A693-8132F92268D0}.Release|Win32.ActiveCfg = Release|Win32
+		{2FD65259-0A03-475D-A693-8132F92268D0}.Release|Win32.Build.0 = Release|Win32
+		{9B213836-DAC9-4C0A-83E0-54C218514F43}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9B213836-DAC9-4C0A-83E0-54C218514F43}.Debug|Win32.Build.0 = Debug|Win32
+		{9B213836-DAC9-4C0A-83E0-54C218514F43}.Release|Win32.ActiveCfg = Release|Win32
+		{9B213836-DAC9-4C0A-83E0-54C218514F43}.Release|Win32.Build.0 = Release|Win32
+		{2F167CA0-3724-4627-A61E-80968BE9E437}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2F167CA0-3724-4627-A61E-80968BE9E437}.Debug|Win32.Build.0 = Debug|Win32
+		{2F167CA0-3724-4627-A61E-80968BE9E437}.Release|Win32.ActiveCfg = Release|Win32
+		{2F167CA0-3724-4627-A61E-80968BE9E437}.Release|Win32.Build.0 = Release|Win32
+		{453F4A57-04CA-445E-B270-1A0CBF17DDB3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{453F4A57-04CA-445E-B270-1A0CBF17DDB3}.Debug|Win32.Build.0 = Debug|Win32
+		{453F4A57-04CA-445E-B270-1A0CBF17DDB3}.Release|Win32.ActiveCfg = Release|Win32
+		{453F4A57-04CA-445E-B270-1A0CBF17DDB3}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
