@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <engine.h>
 #include <engine_utils.h>
+#include <game.h>
 
 void keyDownFunc(uchar key)
 {
