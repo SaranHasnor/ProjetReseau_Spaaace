@@ -19,6 +19,7 @@ void *mem_dupe(void *mem, size_t size);
 void *mem_dupe2(void *mem);
 void mem_free(void *mem);
 void mem_free_all();
+void mem_set(void *mem, int val, size_t size);
 size_t mem_size(void *mem);
 void mem_print();
 

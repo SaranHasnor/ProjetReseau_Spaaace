@@ -1,5 +1,5 @@
-#ifndef PUBLIC_H_DEFINED
-#define PUBLIC_H_DEFINED
+#ifndef UTILS_H_DEFINED
+#define UTILS_H_DEFINED
 
 #ifndef _cplusplus
 #include "utils_ctools.h"

@@ -159,6 +159,11 @@ void mem_free_all()
 	alloc = NULL;
 }
 
+void mem_set(void *mem, int val, size_t size)
+{
+	memset(mem, val, size);
+}
+
 size_t mem_size(void *mem)
 {
 	mem_t *mem2 = alloc;

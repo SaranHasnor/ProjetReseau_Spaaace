@@ -41,7 +41,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)Hasnor_Utils;$(ProjectDir)Libraries\glut\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Hasnor_Interface;$(SolutionDir)Hasnor_Utils;$(ProjectDir)Libraries\glut\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -54,7 +54,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Hasnor_Utils;$(ProjectDir)Libraries\glut\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Hasnor_Interface;$(SolutionDir)Hasnor_Utils;$(ProjectDir)Libraries\glut\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -78,13 +78,13 @@
     <ClCompile Include="engine_input.c" />
     <ClCompile Include="engine_interface.c" />
     <ClCompile Include="engine_utils.c" />
-    <ClCompile Include="interface_init.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="engine_camera.c" />
     <ClCompile Include="engine_window.c" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Hasnor_Interface\Hasnor_Interface.vcxproj">
+      <Project>{cf76d548-eae5-4185-9f7b-f959d918df9f}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Hasnor_Utils\Hasnor_Utils.vcxproj">
       <Project>{9b213836-dac9-4c0a-83e0-54c218514f43}</Project>
     </ProjectReference>

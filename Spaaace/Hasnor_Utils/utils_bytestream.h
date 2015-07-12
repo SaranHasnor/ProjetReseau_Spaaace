@@ -8,7 +8,7 @@ utils_bytestream
 */
 
 typedef unsigned char byte;
-typedef   signed char sbyte;
+typedef char sbyte;
 
 typedef struct {
 	byte			*data;
@@ -20,7 +20,8 @@ void bytestream_init(bytestream *stream, unsigned int size);
 int bytestream_write(bytestream *stream, byte *data, unsigned int size);
 int bytestream_read(bytestream *stream, byte *out, unsigned int size);
 void bytestream_destroy(bytestream *stream);
+char *bytestream_toString(bytestream *stream);
 
-byte randomByte();
+//byte randomByte();
 
 #endif

@@ -1,11 +1,22 @@
-#ifndef UTILS_H_DEFINED
-#define UTILS_H_DEFINED
+#ifndef MISC_UTILS_H_DEFINED
+#define MISC_UTILS_H_DEFINED
 
 /*
 utils_misc
 
 - Utility functions that don't belong anywhere else
 */
+
+char *quickString(char *s);
+char *quickString2(char *s, unsigned int len);
+
+char *strFromVec(float vec[3]);
+char *strFromInt(int n);
+char *strFromFloat(float n);
+void strip(char *s, char c);
+
+int parseInt(char *s);
+float parseFloat(char *s);
 
 int isInRange(float min, float val, float max);
 unsigned int nbDigits(int n);
@@ -18,6 +29,6 @@ void strcpy_safe(char *dst, char *src);
 
 bool charsEqualCaseInsensitive(char a, char b);
 
-void quit();
+void quit(void);
 
 #endif

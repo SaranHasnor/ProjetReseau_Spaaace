@@ -4,7 +4,7 @@
 extern void setupNetwork();
 extern void shutdownNetwork();
 
-void SV_initServer(int maxConnections, unsigned short port, networkStatus_t *status);
+void SV_initServer(int maxConnections, unsigned short port, socketProtocol_t protocol, networkStatus_t *status);
 int SV_checkForNewClients();
 void SV_kickClient(int clientID);
 void SV_closeServer(networkStatus_t *status);

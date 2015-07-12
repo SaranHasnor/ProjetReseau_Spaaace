@@ -1,3 +1,4 @@
+#include "engine.h"
 #include "engine_window.h"
 #include "engine_input.h"
 #include "engine_interface.h"
@@ -20,6 +21,8 @@ void update(int prevTime)
 
 	//printf("FPS: %f\n", 1.0f / time.deltaTimeSeconds);
 
+	interface_update(time.deltaTimeSeconds);
+
 	updateInput(&input);
 	
 	glutSetWindow(window.id);
@@ -33,40 +36,41 @@ void update(int prevTime)
 void display(void)
 {
 	// Frame initialization
+	glDepthMask(GL_TRUE);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	// Camera positioning
-	positionGLCameraForRender();
+	glDepthMask(GL_FALSE);
 
 	// Rendering
+	positionGLCameraForRender();
 	_listener.renderFunc();
+
+	// Interface
+	positionGLCameraForInterface();
+	interface_render();
 
 	// Frame saving and rendering
 	glutSwapBuffers();
 	glFlush();
 }
 
-void runEngine(int argc, char **argv, engineListener_t listener)
+void runEngine(int argc, char **argv, int windowWidth, int windowHeight, char *windowName, engineListener_t listener)
 {
     glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 
-	window.width = DEFAULT_WIDTH;
-	window.height = DEFAULT_WIDTH;
-	window.name = newString("Test");
+	window.width = windowWidth;
+	window.height = windowHeight;
+	window.name = quickString(windowName);
 
 	createWindow(&window);
+
+	interface_init();
 
 	glutDisplayFunc(display);
 	
 	initInput(listener);
 
 	_listener = listener;
-
-	initCamera();
-	enableCameraMovement = true;
 
 	update(0);
 

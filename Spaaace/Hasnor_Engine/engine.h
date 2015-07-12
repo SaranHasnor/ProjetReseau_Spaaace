@@ -3,7 +3,7 @@
 
 #include "engine_callbacks.h"
 
-void runEngine(int argc, char **argv, engineListener_t listener);
+void runEngine(int argc, char **argv, int windowWidth, int windowHeight, char *windowName, engineListener_t listener);
 void shutdownEngine();
 
 #endif

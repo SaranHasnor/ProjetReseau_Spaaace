@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <engine.h>
+#include <engine_interface.h>
 #include <engine_utils.h>
 #include <game.h>
 
@@ -26,9 +27,17 @@ void mouseUpFunc(ushort button)
 
 }
 
+void initEngine()
+{
+	interface_staticLabel(":D", dynamicPlacement(0, 0, 0, 0), ANCHOR_CENTER);
+}
+
 void updateFunc(timeStruct_t time, inputStruct_t input)
 {
-
+	if (time.deltaTime == time.currentTime)
+	{
+		initEngine();
+	}
 }
 
 void renderFunc(void)
@@ -47,7 +56,7 @@ int main(int argc, char **argv)
 	listener.renderFunc = renderFunc;
 	listener.updateFunc = updateFunc;
 
-	runEngine(argc, argv, listener);
+	runEngine(argc, argv, 1200, 600, "Spaaace", listener);
 
 	return 0;
 }

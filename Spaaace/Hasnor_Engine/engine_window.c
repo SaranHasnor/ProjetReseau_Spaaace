@@ -1,6 +1,8 @@
 #include "engine_window.h"
 #include <GL/glut.h>
 #include <utils.h>
+#include "engine_interface.h"
+#include "engine_camera.h"
 
 void initRendering()
 {
@@ -19,35 +21,10 @@ void initRendering()
 
 void reshape(int w, int h)
 {
-	short fixW=0, fixH=0;
+	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 
-	if (w != DEFAULT_WIDTH || h != DEFAULT_HEIGHT)
-	{ // For now, no resizing because it breaks everything
-		glutReshapeWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		return;
-	}
-
-	if (h != DEFAULT_HEIGHT)
-	{ // Can't change that, or it breaks the interface
-		fixH = 1;
-	}
-
-	if (w < INTERFACE_WIDTH)
-	{ // Too small
-		fixW = 1;
-	}
-
-	if (fixH || fixW)
-	{
-		glutReshapeWindow((fixW?INTERFACE_WIDTH:w), (fixH?DEFAULT_HEIGHT:h));
-		return;
-	}
-
-	glViewport(0, 0,(GLsizei) w, (GLsizei) h);
-    glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(60.0, (GLfloat)w / (GLfloat)h, 1.0, 200.0);
-	//gluOrtho2D(0.0, w, h, 0.0);
+	setCameraSize(w, h);
+	interface_reshapeWindow(w, h);
 }
 
 void createWindow(window_t *window)
@@ -61,6 +38,10 @@ void createWindow(window_t *window)
 	window->id = glutCreateWindow(window->name);
 
 	initRendering();
+
+	initCamera();
+	setCameraSize(window->width, window->height);
+	enableCameraMovement = true;
 
 	glutReshapeFunc(reshape);
 }

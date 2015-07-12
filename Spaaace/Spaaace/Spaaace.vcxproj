@@ -66,15 +66,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Hasnor_Utils\Hasnor_Utils.vcxproj">
-      <Project>{9b213836-dac9-4c0a-83e0-54c218514f43}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="game.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hasnor_Utils\Hasnor_Utils.vcxproj">
+      <Project>{9b213836-dac9-4c0a-83e0-54c218514f43}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

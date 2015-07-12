@@ -1,105 +1,40 @@
 #include "utils_string.h"
 #include "utils.h"
 
-#include "utils_bytestream.h"
 #include <string.h>
 
-#pragma warning (disable:4996)	// Allow use of deprecated/unsafe functions
-
-char *newString(char *s)
+void string_initStr(string *str, char *value)
 {
-	int length = strlen(s);
-	char *r = (char*)mem_alloc(sizeof(char)*(length+1));
-	strncpy(r, s, length);
-	r[length] = '\0';
-	return r;
+	str->s = quickString(value);
+	str->len = strlen(str->s);
 }
 
-char *newString2(char *s, unsigned int len)
+void string_initStrFixedSize(string *str, char *value, unsigned int length)
 {
-	unsigned int sLen = strlen(s);
-	int length = (sLen<len)?sLen:len;
-	char *r = (char*)mem_alloc(sizeof(char)*(len+1));
-	strncpy(r, s, length);
-	r[length] = '\0';
-	return r;
+	str->s = quickString2(value, length);
+	str->len = strlen(str->s);
 }
 
-char *strFromInt(int n)
+void string_initInt(string *str, int value)
 {
-	uint len = nbDigits(n);
-	char *res = (char*)mem_alloc(sizeof(char)*len+1);
-	sprintf(res, "%d", n);
-	return res;
+	str->s = strFromInt(value);
+	str->len = strlen(str->s);
 }
 
-char *strFromFloat(float n)
+void string_initFloat(string *str, float value)
 {
-	uint len = nbDigits((int)n) + 10;	// Something like that...
-	char *res = (char*)mem_alloc(sizeof(char)*len+1);
-	sprintf(res, "%f", n);
-	return res;
+	str->s = strFromFloat(value);
+	str->len = strlen(str->s);
 }
 
-char *strFromVec(float vec[3])
+void string_initVector(string *str, float *value, uint size)
 {
-	char *res = (char*)mem_alloc(sizeof(char)*48); // Sounds about right
-	sprintf(res, "%f %f %f", vec[0], vec[1], vec[2]);
-	return res;
+	str->s = strFromVec(value);
+	str->len = strlen(str->s);
 }
 
-char *strFromBinary(byte *bin)
+void string_strip(string *str, char c)
 {
-	uint len = mem_size(bin);
-	char *res;
-	uint i;
-
-	if (!len) len = 1;
-
-	res = (char*)mem_alloc(sizeof(char)*(len*9)); // len * (8 digits + one space or \0)
-
-	for (i = 0; i < len; i++)
-	{
-		uint j;
-		for (j = 0; j < 8; j++)
-		{
-			if (bin[i] & (1 << (7-j)))
-			{
-				res[9*i+j] = '1';
-			}
-			else
-			{
-				res[9*i+j] = '0';
-			}
-		}
-		res[9*i+j] = ' ';
-	}
-	res[9*len-1] = '\0';
-	return res;
-}
-
-void strip(char *s, char c)
-{
-	unsigned int i=0,j=0;
-	unsigned int len = strlen(s);
-	short inString = 0;
-	
-	while (j < len)
-	{
-		if ((s[j] == '\"' || s[j] == '\'') && (j == 0 || s[j-1] != '\\') && s[j] != c)
-			inString = !inString;
-
-		if (!inString)
-		{
-			if (s[j] == c)
-			{
-				j++;
-				continue;
-			}
-		}
-		s[i] = s[j];
-		i++;
-		j++;
-	}
-	s[i] = '\0';
+	strip(str->s, c);
+	str->len = strlen(str->s);
 }

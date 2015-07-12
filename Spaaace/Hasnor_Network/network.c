@@ -1,17 +1,22 @@
 #include "network.h"
 #include <WinSock2.h>
-#include <utils.h>
 #include <utils_time.h>
+
+#include "network_tcp.h"
+#include "network_udp.h"
 
 #pragma comment (lib, "ws2_32.lib")
 
 typedef struct {
-	int				id;
-	SOCKET			socket;
-	socketType_t	socketType;
-	SOCKADDR_IN		address;
-	long			lastInActivity;		// Time at which we last received a message from this client
-	long			lastOutActivity;	// Time at which we last sent a message to this client
+	int					id;
+
+	SOCKET				socket;
+	socketType_t		type;
+	socketProtocol_t	protocol;
+	SOCKADDR_IN			address;
+
+	long				lastInActivity;		// Time at which we last received a message from this client
+	long				lastOutActivity;	// Time at which we last sent a message to this client
 } networkConnection_t;
 
 networkMode_t _networkMode = NETWORK_MODE_LOCAL;
@@ -52,7 +57,7 @@ void _cleanupSocket(SOCKET *socket)
 }
 
 int _checkSocketReadable(SOCKET socket)
-{
+{ // Unused
 	int temp;
 	fd_set set;
 	TIMEVAL timeout;
@@ -74,40 +79,17 @@ int _checkSocketReadable(SOCKET socket)
 	return temp;
 }
 
-int _checkSocketWritable(SOCKET socket)
-{
-	int temp;
-	fd_set set;
-	TIMEVAL timeout;
-
-	memset(&set, 0, sizeof(fd_set));
-
-	FD_SET(socket, &set);
-
-	timeout.tv_sec = 0;
-	timeout.tv_usec = 1000000;
-
-	temp = select(socket+1, NULL, &set, NULL, &timeout);
-	
-	if (temp > 0)
-	{
-		return FD_ISSET(socket, &set);
-	}
-	
-	return temp;
-}
-
-bool _addNewSocket(SOCKET socket, socketType_t type)
+bool _addNewSocket(SOCKET socket, socketType_t type, socketProtocol_t protocol, SOCKADDR_IN address)
 {
 	uint i = 0;
 	while (i < _maxConnections)
 	{
 		if (_connections[i].socket == INVALID_SOCKET)
 		{
-			_setupSocket(socket);
-			_connections[i].id = i;
 			_connections[i].socket = socket;
-			_connections[i].socketType = type;
+			_connections[i].type = type;
+			_connections[i].protocol = protocol;
+			_connections[i].address = address;
 			_connections[i].lastInActivity = _connections[i].lastOutActivity = time_current_ms();
 			return true;
 		}
@@ -142,125 +124,94 @@ SOCKET _socketWithID(int id)
 	return INVALID_SOCKET;
 }
 
-bool createHostSocket(int maxConnections, unsigned short port, socketType_t type, networkStatus_t *status)
+void _setupMaxConnections(uint maxConnections)
 {
-	SOCKET newSocket;
-	SOCKADDR_IN addr;
-	int temp;
 	uint i;
-
-	addr.sin_addr.S_un.S_addr = ADDR_ANY;
-	addr.sin_port = htons(port);
-	addr.sin_family = AF_INET;
-
-	if (type == SOCKET_TYPE_TCP)
-	{
-		newSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	}
-	else if (type == SOCKET_TYPE_UDP)
-	{
-		newSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	}
-	_setupSocket(newSocket);
-
-	temp = bind(newSocket, (const SOCKADDR*)&addr, sizeof(addr));
-	if (temp < 0)
-	{
-		if (status)
-		{
-			status->error = NETWORK_ERROR_BINDING;
-			status->socketError = WSAGetLastError();
-		}
-		_cleanupSocket(&newSocket);
-		return false;
-	}
-
-	if (maxConnections < 0)
-	{
-		maxConnections = SOMAXCONN;
-	}
-
-	if (listen(newSocket, maxConnections) == SOCKET_ERROR)
-	{
-		if (status)
-		{
-			status->error = NETWORK_ERROR_LISTEN;
-			status->socketError = WSAGetLastError();
-		}
-		_cleanupSocket(&newSocket);
-		return false;
-	}
-
-	_maxConnections = ++maxConnections; // We count the first connection as the server's local socket
-	
+	_maxConnections = maxConnections;
 	_connections = (networkConnection_t*)mem_alloc(sizeof(networkConnection_t) * _maxConnections);
 	memset(_connections, 0, sizeof(networkConnection_t) * _maxConnections);
 	for (i = 0; i < _maxConnections; i++)
 	{
+		_connections[i].id = i;
 		_connections[i].socket = INVALID_SOCKET;
 	}
-	
-	_connections[0].id = -1;
-	_connections[0].socket = newSocket;
-	_connections[0].socketType = type;
-	_connections[0].address = addr;
+}
 
+bool createHostSocket(int maxConnections, unsigned short port, socketProtocol_t protocol, networkStatus_t *status)
+{
+	SOCKET newSocket;
+	SOCKADDR_IN addr;
+
+	if (protocol == SOCKET_PROTOCOL_TCP)
+	{
+		if (!TCP_createHostSocket(maxConnections, port, &newSocket, &addr, status))
+		{
+			_cleanupSocket(&newSocket);
+			return false;
+		}
+	}
+	else if (protocol == SOCKET_PROTOCOL_UDP)
+	{
+		if (!UDP_createSocket(NULL, port, &newSocket, &addr, status))
+		{
+			_cleanupSocket(&newSocket);
+			return false;
+		}
+	}
+
+	_setupMaxConnections(++maxConnections); // We count the first connection as the server's local socket
+
+	_setupSocket(newSocket);
+	_addNewSocket(newSocket, SOCKET_TYPE_HOST, protocol, addr);
+	_connections[0].id = -1; // Guess this is needed for now
+	
 	_networkMode = NETWORK_MODE_HOST;
 
 	return true;
 }
 
-int createSocket(const char *address, unsigned short port, socketType_t type, networkStatus_t *status)
+bool createSocket(const char *address, unsigned short port, socketProtocol_t protocol, networkStatus_t *status)
 {
 	SOCKET newSocket;
 	SOCKADDR_IN addr;
 
-	addr.sin_addr.S_un.S_addr = address?inet_addr(address):ADDR_ANY;
-	addr.sin_port = htons(port);
-	addr.sin_family = AF_INET;
+	if (protocol == SOCKET_PROTOCOL_TCP)
+	{
+		if (!TCP_createSocket(address, port, &newSocket, &addr, status))
+		{
+			_cleanupSocket(&newSocket);
+			return false;
+		}
+	}
+	else if (protocol == SOCKET_PROTOCOL_UDP)
+	{
+		if (!UDP_createSocket(address, port, &newSocket, &addr, status))
+		{
+			_cleanupSocket(&newSocket);
+			return false;
+		}
+	}
 
-	if (type == SOCKET_TYPE_TCP)
-	{
-		newSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	}
-	else if (type == SOCKET_TYPE_UDP)
-	{
-		newSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	}
+	_setupMaxConnections(1);
+
 	_setupSocket(newSocket);
-
-	_maxConnections = 1;
-	
-	_connections = (networkConnection_t*)mem_alloc(sizeof(networkConnection_t) * _maxConnections);
-	_connections[0].id = 0;
-	_connections[0].socket = newSocket;
-	_connections[0].socketType = type;
-	_connections[0].address = addr;
-	_connections[0].lastInActivity = _connections[0].lastOutActivity = time_current_ms();
+	_addNewSocket(newSocket, SOCKET_TYPE_CLIENT, protocol, addr);
 
 	return true;
 }
 
 bool tryToConnect(bytestream clientInfo, networkStatus_t *status)
 {
-	if (connect(_connections[0].socket, (const SOCKADDR*)&_connections[0].address, sizeof(_connections[0].address)) == SOCKET_ERROR)
+	if (_connections[0].protocol == SOCKET_PROTOCOL_TCP)
 	{
-		int error = WSAGetLastError();
-		if (error == WSAEWOULDBLOCK)
+		if (!TCP_connect(_connections[0].socket, ((SOCKADDR*)&_connections[0].address), status))
 		{
-			if (!_checkSocketWritable(_connections[0].socket))
-			{
-				status->error = NETWORK_ERROR_CONNECT;
-				status->socketError = 0;
-				return false;
-			}
-		}
-		else
-		{
-			status->error = NETWORK_ERROR_CONNECT;
-			status->socketError = error;
 			return false;
 		}
+	}
+	else
+	{ // There is no proper connection in UDP, just say hello
+		
 	}
 
 	_networkMode = NETWORK_MODE_CLIENT;
@@ -281,7 +232,7 @@ bool getNewClient()
 		return false;
 	}
 
-	if (_addNewSocket(newSocket, _connections[0].socketType))
+	if (_addNewSocket(newSocket, _connections[0].type, _connections[0].protocol, *((SOCKADDR_IN*)&inAddr)))
 	{
 		return true;
 	}
@@ -387,10 +338,25 @@ void _serializeNetworkMessage(networkMessage_t in, bytestream *out)
 	out->len = size;
 }
 
-void _doSend(networkConnection_t *connection, bytestream serializedMessage)
+bool _doSend(networkConnection_t *connection, bytestream serializedMessage)
 {
-	send(connection->socket, serializedMessage.data, serializedMessage.len, 0);
+	if (connection->protocol == SOCKET_PROTOCOL_TCP)
+	{
+		if (!TCP_sendMessage(connection->socket, serializedMessage))
+		{
+			return false;
+		}
+	}
+	else if (connection->protocol == SOCKET_PROTOCOL_UDP)
+	{
+		if (!UDP_sendMessage(serializedMessage, connection->socket, (const SOCKADDR*)&connection->address, sizeof(connection->address)))
+		{
+			return false;
+		}
+	}
 	connection->lastOutActivity = time_current_ms();
+
+	return true;
 }
 
 void sendMessage(networkMessageType_t type, int senderID, int receiverID, bytestream content)
@@ -427,13 +393,19 @@ void sendMessage(networkMessageType_t type, int senderID, int receiverID, bytest
 			{
 				//if (_connections[i].id != message.senderID) // Actually including the sender too for now...
 				{
-					_doSend(&_connections[i], serializedMessage);
+					if (!_doSend(&_connections[i], serializedMessage))
+					{
+						printf("Failed to transfer message to client %i\n", i);
+					}
 				}
 			}
 		}
 		else
 		{
-			_doSend(target, serializedMessage);
+			if (!_doSend(target, serializedMessage))
+			{
+				printf("Failed to send message to server\n");
+			}
 		}
 
 		bytestream_destroy(&serializedMessage);
@@ -471,16 +443,22 @@ void receiveMessages(networkUpdate_t *update)
 	{
 		if (_connections[i].socket != INVALID_SOCKET)
 		{
-			int received = recv(_connections[i].socket, buffer, 8192, 0);
-			if (received > 0)
+			bool gotMessage = false;
+			bytestream inMessage;
+			if (_connections[i].protocol == SOCKET_PROTOCOL_TCP)
 			{
-				networkMessage_t *out;
-				bytestream inMessage;
-				uint decoded = 0;
+				gotMessage = TCP_receiveMessages(_connections[i].socket, &inMessage);
+			}
+			else if (_connections[i].protocol == SOCKET_PROTOCOL_UDP)
+			{
+				int len = sizeof(_connections[i].address);
+				gotMessage = UDP_receiveMessages(&inMessage, _connections[i].socket, (SOCKADDR*)&_connections[i].address, &len);
+			}
 
-				bytestream_init(&inMessage, received);
-				bytestream_write(&inMessage, buffer, received);
-				inMessage.cursor = 0;
+			if (gotMessage)
+			{ // We may have received more than one message, let's make sure they're all parsed
+				networkMessage_t *out;
+				uint decoded = 0;
 
 				do {
 					update->count++;
@@ -496,7 +474,7 @@ void receiveMessages(networkUpdate_t *update)
 					}
 
 					out->receiveTime = time_current_ms();
-				} while (decoded < (uint)received);
+				} while (decoded < inMessage.len);
 
 				bytestream_destroy(&inMessage);
 

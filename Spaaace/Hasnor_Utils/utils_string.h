@@ -2,7 +2,6 @@
 #define HASNOR_STRING_DEFINED
 
 #include "utils_types.h"
-#include "utils_bytestream.h"
 
 /*
 utils_string
@@ -15,13 +14,12 @@ typedef struct {
 	unsigned int	len;
 } string;
 
-char *newString(char *s);
-char *newString2(char *s, unsigned int length);
-char *strFromInt(int n);
-char *strFromFloat(float n);
-char *strFromVec(float vec[3]);
-char *strFromBinary(byte *bin);
+void string_initStr(string *str, char *value);
+void string_initStrFixedSize(string *str, char *value, unsigned int length);
+void string_initInt(string *str, int value);
+void string_initFloat(string *str, float value);
+void string_initVector(string *str, float *vec, uint size);
 
-void strip(char *s, char c);
+void string_strip(string *str, char c);
 
 #endif

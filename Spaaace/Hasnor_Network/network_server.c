@@ -1,8 +1,7 @@
 #include "network_server.h"
 #include "network.h"
-#include <utils.h>
 
-void SV_initServer(int maxConnections, unsigned short port, networkStatus_t *status)
+void SV_initServer(int maxConnections, unsigned short port, socketProtocol_t protocol, networkStatus_t *status)
 {
 	if (currentNetworkMode() != NETWORK_MODE_LOCAL)
 	{
@@ -14,7 +13,7 @@ void SV_initServer(int maxConnections, unsigned short port, networkStatus_t *sta
 		return;
 	}
 
-	if (!createHostSocket(maxConnections, port, SOCKET_TYPE_TCP, status))
+	if (!createHostSocket(maxConnections, port, protocol, status))
 	{
 		return;
 	}

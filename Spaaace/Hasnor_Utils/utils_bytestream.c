@@ -1,14 +1,15 @@
 #include "utils_bytestream.h"
-#include "utils.h"
+#include "utils_ctools.h"
+#include "utils_types.h"
+
 #include <string.h>
-#include <stdlib.h>
 
 void bytestream_init(bytestream *stream, unsigned int size)
 {
 	if (size)
 	{
 		stream->data = (byte*)mem_alloc(sizeof(byte) * size);
-		memset(stream->data, 0, sizeof(byte) * size);
+		mem_set(stream->data, 0, sizeof(byte) * size);
 	}
 	else
 	{
@@ -47,8 +48,38 @@ void bytestream_destroy(bytestream *stream)
 	}
 }
 
-byte randomByte()
-{ // This is sooooooooo inefficient
+char *bytestream_toString(bytestream *stream)
+{
+	char *res;
+	uint i;
+	uint len = stream->len;
+
+	if (!len) len = 1;
+
+	res = (char*)mem_alloc(sizeof(byte)*(len*9)); // len * (8 digits + one space or \0)
+
+	for (i = 0; i < len; i++)
+	{
+		uint j;
+		for (j = 0; j < 8; j++)
+		{
+			if (stream->data[i] & (1 << (7-j)))
+			{
+				res[9*i+j] = '1';
+			}
+			else
+			{
+				res[9*i+j] = '0';
+			}
+		}
+		res[9*i+j] = ' ';
+	}
+	res[9*len-1] = '\0';
+	return res;
+}
+
+/*byte randomByte()
+{
 	byte res = 0;
 	int i;
 	for (i = 0; i < 8; i++)
@@ -65,4 +96,4 @@ void fillWithRandom(void *dst, size_t size)
 	{
 		((byte*)dst)[i] = randomByte();
 	}
-}
+}*/

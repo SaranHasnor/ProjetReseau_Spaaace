@@ -2,6 +2,7 @@
 #include "engine_camera.h"
 #include <utils.h>
 #include <utils_vector.h>
+#include <utils_matrix.h>
 
 float _camPos[3];
 float _camAngle[3];
@@ -11,11 +12,26 @@ float _moveDir[3];
 bool enableCameraMovement = false;
 float cameraSpeed = 1.0f;
 
+float _renderProjectionMatrix[16];
+float _interfaceProjectionMatrix[16];
+float _renderModelViewMatrix[16];
+
+// TEMP
+int _screenWidth, _screenHeight;
+
 void initCamera()
 {
 	vectorSet(_moveDir, 0.0f, 0.0f, 0.0f);
 	vectorSet(_camPos, DEFAULT_CAMERA_POSITION);
 	vectorSet(_camAngle, DEFAULT_CAMERA_ANGLE);
+}
+
+void setCameraSize(int width, int height)
+{
+	mat_perspective(_renderProjectionMatrix, 60.0f, (float)width/(float)height, 1.0f, 200.0f);
+	mat_orthographic(_interfaceProjectionMatrix, width, height, -200.0f, 200.0f); // FIXME
+	_screenWidth = width;
+	_screenHeight = height;
 }
 
 void setCameraPosition(float pos[3])
@@ -110,27 +126,28 @@ void updateCamera(timeStruct_t time, inputStruct_t input)
 	vectorMA(movement, movement, _moveDir[1], forward);
 	vectorMA(movement, movement, _moveDir[0], right);
 	
-#if USE_NEW_CAMERA_MOVEMENT
-	vectorScale(movement, time.deltaTimeSeconds, movement);
-	vectorAdd(_camPos, _camPos, movement);
-	vectorScale(_moveDir, 0.95f, _moveDir); // Science
-#else
 	vectorMA(_camPos, _camPos, cameraSpeed * time.deltaTimeSeconds, movement);
 	vectorSet(_moveDir, 0.0f, 0.0f, 0.0f);
-#endif
+
+	mat_viewModel(_renderModelViewMatrix, _camPos, _camAngle);
 }
 
 void positionGLCameraForRender()
 {
-	float forward[3], right[3], camLookPos[3];
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixf(_renderProjectionMatrix);
 
-	// Calculate the camera's facing direction
-	AngleVectors(_camAngle, forward, right, NULL);
-	vectorScale(forward, 100, forward);
-	vectorAdd(camLookPos, forward, _camPos);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixf(_renderModelViewMatrix);
+}
 
-	// Set the camera (I want to put this out of the loop and move/rotate the world instead)
-	gluLookAt((double)_camPos[0], (double)_camPos[1], (double)_camPos[2],
-		(double)camLookPos[0], (double)camLookPos[1], (double)camLookPos[2],
-		(double)axis[2][0], (double)axis[2][1], (double)axis[2][2]);
+void positionGLCameraForInterface()
+{
+	glMatrixMode(GL_PROJECTION);
+	//glLoadMatrixf(_interfaceProjectionMatrix);
+	glLoadIdentity();
+	gluOrtho2D(0.0, _screenWidth, _screenHeight, 0.0); // TEMP
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }

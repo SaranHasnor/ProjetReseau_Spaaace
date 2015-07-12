@@ -1,6 +1,7 @@
 #ifndef _NETWORK_UTILS_DEFINED
 #define _NETWORK_UTILS_DEFINED
 
+#include <utils_types.h>
 #include <utils_bytestream.h>
 
 typedef enum {
@@ -51,6 +52,11 @@ typedef struct {
 
 	networkStatus_t		status;
 } networkUpdate_t;
+
+typedef enum {
+	SOCKET_PROTOCOL_TCP,
+	SOCKET_PROTOCOL_UDP
+} socketProtocol_t;
 
 void printError(networkStatus_t status);
 void printMessage(networkMessage_t message);

@@ -12,8 +12,8 @@ typedef enum {
 } networkMode_t;
 
 typedef enum {
-	SOCKET_TYPE_TCP,
-	SOCKET_TYPE_UDP
+	SOCKET_TYPE_CLIENT,
+	SOCKET_TYPE_HOST
 } socketType_t;
 
 networkMode_t currentNetworkMode();
@@ -22,8 +22,8 @@ uint maxConnections();
 void setupNetwork();
 void shutdownNetwork();
 
-bool createHostSocket(int maxConnections, unsigned short port, socketType_t type, networkStatus_t *status);
-int createSocket(const char *address, unsigned short port, socketType_t type, networkStatus_t *status);
+bool createHostSocket(int maxConnections, unsigned short port, socketProtocol_t protocol, networkStatus_t *status);
+bool createSocket(const char *address, unsigned short port, socketProtocol_t protocol, networkStatus_t *status);
 
 bool tryToConnect(bytestream clientInfo, networkStatus_t *status);
 bool getNewClient();

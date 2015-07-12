@@ -7,6 +7,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#pragma warning (disable:4996)	// Allow use of deprecated/unsafe functions
+
 int randomIntBetween(int min, int max)
 {
 	if (max < min)
@@ -55,13 +57,91 @@ unsigned int nbDigits(int n)
 	return i;
 }
 
+char *quickString(char *s)
+{
+	int length = strlen(s);
+	char *r = (char*)mem_alloc(sizeof(char)*(length+1));
+	strncpy(r, s, length);
+	r[length] = '\0';
+	return r;
+}
+
+char *quickString2(char *s, unsigned int len)
+{
+	unsigned int sLen = strlen(s);
+	int length = (sLen<len)?sLen:len;
+	char *r = (char*)mem_alloc(sizeof(char)*(len+1));
+	strncpy(r, s, length);
+	r[length] = '\0';
+	return r;
+}
+
+char *strFromInt(int n)
+{
+	uint len = nbDigits(n);
+	char *res = (char*)mem_alloc(sizeof(char)*len+1);
+	sprintf(res, "%d", n);
+	return res;
+}
+
+int parseInt(char *s)
+{
+	return atoi(s);
+}
+
+char *strFromFloat(float n)
+{
+	uint len = nbDigits((int)n) + 10;	// Something like that...
+	char *res = (char*)mem_alloc(sizeof(char)*len+1);
+	sprintf(res, "%f", n);
+	return res;
+}
+
+float parseFloat(char *s)
+{
+	return (float)atof(s);
+}
+
+char *strFromVec(float vec[3])
+{
+	char *res = (char*)mem_alloc(sizeof(char)*48); // Sounds about right
+	sprintf(res, "%f %f %f", vec[0], vec[1], vec[2]);
+	return res;
+}
+
+void strip(char *s, char c)
+{
+	unsigned int i=0,j=0;
+	unsigned int len = strlen(s);
+	bool inString = false;
+	
+	while (j < len)
+	{
+		if ((s[j] == '\"' || s[j] == '\'') && (j == 0 || s[j-1] != '\\') && s[j] != c)
+			inString = !inString;
+
+		if (!inString)
+		{
+			if (s[j] == c)
+			{
+				j++;
+				continue;
+			}
+		}
+		s[i] = s[j];
+		i++;
+		j++;
+	}
+	s[i] = '\0';
+}
+
 void vecFromStr(float vec[3], char *str)
 {
 	char *pos;
 	char *pos2;
 	char *temp;
 	
-	temp = newString(str);
+	temp = quickString(str);
 	pos = strchr(temp, ' ');
 	*pos = '\0';
 	pos2 = strchr(pos+1, ' ');

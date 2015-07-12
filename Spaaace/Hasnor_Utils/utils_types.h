@@ -14,7 +14,6 @@ typedef unsigned long ulong;
 
 #ifndef _cplusplus
 typedef enum { false, true } bool;
-#include "utils_string.h"
 #endif
 
 #endif

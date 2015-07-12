@@ -41,7 +41,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)Spaaace;$(SolutionDir)Hasnor_Engine;$(SolutionDir)Hasnor_Network;$(SolutionDir)Hasnor_Utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Spaaace;$(SolutionDir)Hasnor_Engine;$(SolutionDir)Hasnor_Interface;$(SolutionDir)Hasnor_Network;$(SolutionDir)Hasnor_Utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -54,7 +54,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Spaaace;$(SolutionDir)Hasnor_Engine;$(SolutionDir)Hasnor_Network;$(SolutionDir)Hasnor_Utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Spaaace;$(SolutionDir)Hasnor_Engine;$(SolutionDir)Hasnor_Interface;$(SolutionDir)Hasnor_Network;$(SolutionDir)Hasnor_Utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -66,6 +66,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Hasnor_Engine\Hasnor_Engine.vcxproj">
       <Project>{453f4a57-04ca-445e-b270-1a0cbf17ddb3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Hasnor_Interface\Hasnor_Interface.vcxproj">
+      <Project>{cf76d548-eae5-4185-9f7b-f959d918df9f}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Hasnor_Network\Hasnor_Network.vcxproj">
       <Project>{2f167ca0-3724-4627-a61e-80968be9e437}</Project>

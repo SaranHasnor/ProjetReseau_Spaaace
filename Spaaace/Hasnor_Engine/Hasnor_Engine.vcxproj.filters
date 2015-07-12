@@ -47,19 +47,16 @@
     <ClCompile Include="engine_interface.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="interface_init.c">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="engine_window.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="engine_camera.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="engine_callbacks.c">
+    <ClCompile Include="engine_utils.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="engine_utils.c">
+    <ClCompile Include="engine_callbacks.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

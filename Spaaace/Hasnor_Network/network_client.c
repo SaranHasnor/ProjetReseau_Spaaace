@@ -1,8 +1,7 @@
 #include "network_client.h"
 #include "network.h"
-#include <utils.h>
 
-void CL_connectToServer(const char *address, unsigned short port, bytestream clientInfo, networkStatus_t *status)
+void CL_connectToServer(const char *address, unsigned short port, bytestream clientInfo, socketProtocol_t protocol, networkStatus_t *status)
 {
 	if (currentNetworkMode() != NETWORK_MODE_LOCAL)
 	{
@@ -16,7 +15,7 @@ void CL_connectToServer(const char *address, unsigned short port, bytestream cli
 
 	if (maxConnections() == 0)
 	{ // setup the socket
-		if (!createSocket(address, port, SOCKET_TYPE_TCP, status))
+		if (!createSocket(address, port, protocol, status))
 		{
 			return;
 		}
