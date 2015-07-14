@@ -110,8 +110,6 @@ face_t *addFaceToMesh(mesh_t *mesh)
 	face_t *face = (face_t*)mem_alloc(sizeof(face_t));
 	mem_set(face, 0, sizeof(face_t));
 
-	face->program = defaultProgram();
-
 	glGenBuffers(1, &face->vboIndex);
 	glGenBuffers(1, &face->eboIndex);
 
@@ -438,29 +436,37 @@ void renderMesh(const mesh_t *mesh, float viewMatrix[16])
 	for (i = 0; i < mesh->nbFaces; i++)
 	{
 		face_t *face = mesh->faces[i];
-		glUseProgram(face->program->programID);
+		program_t *program = face->program;
+		bool gotTexture = (face->texture != NULL);
 
-		glUniform3fv(face->program->originLocation, 1, mesh->origin);
-		glUniformMatrix4fv(face->program->rotationLocation, 1, GL_FALSE, mesh->rotation);
+		if (!program)
+		{
+			program = defaultProgram(gotTexture);
+		}
 
-		if (face->texture)
+		glUseProgram(program->programID);
+
+		glUniform3fv(program->originLocation, 1, mesh->origin);
+		glUniformMatrix4fv(program->rotationLocation, 1, GL_FALSE, mesh->rotation);
+
+		if (gotTexture)
 		{
 			glActiveTexture(GL_TEXTURE0 + face->texture->textureID);
 			glBindTexture(GL_TEXTURE_2D, face->texture->textureID);
-			glUniform1i(face->program->textureLocation, face->texture->textureID);
+			glUniform1i(program->textureLocation, face->texture->textureID);
 		}
 			
 		glBindBuffer(GL_ARRAY_BUFFER, face->vboIndex);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, face->eboIndex);
 
-		glVertexAttribPointer(face->program->coordsLocation, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), NULL);
-		glEnableVertexAttribArray(face->program->coordsLocation);
-		glVertexAttribPointer(face->program->texCoordsLocation, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(face->program->texCoordsLocation);
+		glVertexAttribPointer(program->coordsLocation, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), NULL);
+		glEnableVertexAttribArray(program->coordsLocation);
+		glVertexAttribPointer(program->texCoordsLocation, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(program->texCoordsLocation);
 
-		glUniformMatrix4fv(face->program->viewMatLocation, 1, GL_TRUE, viewMatrix);
+		glUniformMatrix4fv(program->viewMatLocation, 1, GL_TRUE, viewMatrix);
 
-		glUniform4fv(face->program->colorLocation, 1, face->color);
+		glUniform4fv(program->colorLocation, 1, face->color);
 
 		glDrawElements(GL_TRIANGLES, face->nbVertices, GL_UNSIGNED_SHORT, NULL);
 	}

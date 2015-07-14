@@ -49,4 +49,4 @@ shader_t *shaderFromContent(shaderType_t type, const char *contents);
 shader_t *shaderFromPath(shaderType_t type, const char *filePath);
 program_t *programWithShaders(shader_t *vertexShader, shader_t *fragmentShader);
 
-program_t *defaultProgram();
+program_t *defaultProgram(bool forTexture);

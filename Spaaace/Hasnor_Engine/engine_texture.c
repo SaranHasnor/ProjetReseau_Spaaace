@@ -116,7 +116,7 @@ shader_t *shaderFromContent(shaderType_t type, const char *contents)
 }
 
 shader_t *shaderFromPath(shaderType_t type, const char *filePath)
-{
+{ // TODO
 	char *contents = NULL;
 	shader_t *newShader = shaderFromContent(type, contents);
 	newShader->filePath = quickString(filePath);
@@ -169,16 +169,31 @@ program_t *programWithShaders(shader_t *vertexShader, shader_t *fragmentShader)
 	return newProgram;
 }
 
-program_t *defaultProgram()
+program_t *defaultProgram(bool forTexture)
 {
 	static program_t *_defaultProgram = NULL;
+	static program_t *_defaultTextureProgram = NULL;
 
-	if (!_defaultProgram)
+	if (forTexture)
 	{
-		shader_t *vShader = shaderFromContent(SHADER_VERTEX, defaultVertexShader);
-		shader_t *fShader = shaderFromContent(SHADER_FRAGMENT, defaultFragmentShader);
-		_defaultProgram = programWithShaders(vShader, fShader);
-	}
+		if (!_defaultTextureProgram)
+		{
+			shader_t *vShader = shaderFromContent(SHADER_VERTEX, defaultVertexShader);
+			shader_t *fShader = shaderFromContent(SHADER_FRAGMENT, defaultFragmentShader_texture);
+			_defaultTextureProgram = programWithShaders(vShader, fShader);
+		}
 
-	return _defaultProgram;
+		return _defaultTextureProgram;
+	}
+	else
+	{
+		if (!_defaultProgram)
+		{
+			shader_t *vShader = shaderFromContent(SHADER_VERTEX, defaultVertexShader);
+			shader_t *fShader = shaderFromContent(SHADER_FRAGMENT, defaultFragmentShader);
+			_defaultProgram = programWithShaders(vShader, fShader);
+		}
+
+		return _defaultProgram;
+	}
 }

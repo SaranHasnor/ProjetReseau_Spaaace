@@ -78,7 +78,7 @@ void moveMesh(mesh_t *mesh, float x, float y, float z);
 //void scaleFace(face_t *face, float x, float y, float z);
 //void scaleMesh(mesh_t *mesh, float x, float y, float z);
 
-// Duplication functions
+// Duplication functions (unsafe for now)
 vertex_t *duplicateVertex(vertex_t *vertex);
 face_t *duplicateFace(face_t *face);
 mesh_t *duplicateMesh(mesh_t *mesh);
