@@ -57,7 +57,7 @@ unsigned int nbDigits(int n)
 	return i;
 }
 
-char *quickString(char *s)
+char *quickString(const char *s)
 {
 	int length = strlen(s);
 	char *r = (char*)mem_alloc(sizeof(char)*(length+1));
@@ -66,7 +66,7 @@ char *quickString(char *s)
 	return r;
 }
 
-char *quickString2(char *s, unsigned int len)
+char *quickString2(const char *s, unsigned int len)
 {
 	unsigned int sLen = strlen(s);
 	int length = (sLen<len)?sLen:len;

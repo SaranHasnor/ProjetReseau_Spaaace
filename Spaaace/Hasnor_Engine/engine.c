@@ -3,8 +3,11 @@
 #include "engine_input.h"
 #include "engine_interface.h"
 #include "engine_camera.h"
-#include <GL\glut.h>
+
 #include <utils.h>
+
+#include <GL\glew.h>
+#include <GL\glut.h>
 
 window_t window;
 engineListener_t _listener;
@@ -26,7 +29,7 @@ void update(int prevTime)
 	updateInput(&input);
 	
 	glutSetWindow(window.id);
-	updateCamera(time, input);
+	updateGLCamera(time, input);
 	_listener.updateFunc(time, input);
 
 	glutTimerFunc(10, update, curTime);
@@ -53,7 +56,7 @@ void display(void)
 	glFlush();
 }
 
-void runEngine(int argc, char **argv, int windowWidth, int windowHeight, char *windowName, engineListener_t listener)
+void engine_run(int argc, char **argv, int windowWidth, int windowHeight, char *windowName, engineListener_t listener)
 {
     glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -63,6 +66,8 @@ void runEngine(int argc, char **argv, int windowWidth, int windowHeight, char *w
 	window.name = quickString(windowName);
 
 	createWindow(&window);
+
+	glewInit();
 
 	interface_init();
 
@@ -77,7 +82,7 @@ void runEngine(int argc, char **argv, int windowWidth, int windowHeight, char *w
 	glutMainLoop();
 }
 
-void shutdownEngine()
+void engine_shutdown()
 {
 	// Force the engine to shutdown
 	quit(); // temp

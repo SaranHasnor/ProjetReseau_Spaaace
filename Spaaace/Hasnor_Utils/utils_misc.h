@@ -7,8 +7,8 @@ utils_misc
 - Utility functions that don't belong anywhere else
 */
 
-char *quickString(char *s);
-char *quickString2(char *s, unsigned int len);
+char *quickString(const char *s);
+char *quickString2(const char *s, unsigned int len);
 
 char *strFromVec(float vec[3]);
 char *strFromInt(int n);

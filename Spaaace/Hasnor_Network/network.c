@@ -62,7 +62,7 @@ int _checkSocketReadable(SOCKET socket)
 	fd_set set;
 	TIMEVAL timeout;
 
-	memset(&set, 0, sizeof(fd_set));
+	mem_set(&set, 0, sizeof(fd_set));
 
 	FD_SET(socket, &set);
 
@@ -129,7 +129,7 @@ void _setupMaxConnections(uint maxConnections)
 	uint i;
 	_maxConnections = maxConnections;
 	_connections = (networkConnection_t*)mem_alloc(sizeof(networkConnection_t) * _maxConnections);
-	memset(_connections, 0, sizeof(networkConnection_t) * _maxConnections);
+	mem_set(_connections, 0, sizeof(networkConnection_t) * _maxConnections);
 	for (i = 0; i < _maxConnections; i++)
 	{
 		_connections[i].id = i;

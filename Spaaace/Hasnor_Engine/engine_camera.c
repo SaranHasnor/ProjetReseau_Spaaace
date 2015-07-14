@@ -4,13 +4,11 @@
 #include <utils_vector.h>
 #include <utils_matrix.h>
 
-float _camPos[3];
-float _camAngle[3];
+float _camPosition[3];
+float _camAngles[3];
 
-float _moveDir[3];
-
-bool enableCameraMovement = false;
-float cameraSpeed = 1.0f;
+float _camVelocity[3];
+float _camRotation[3];
 
 float _renderProjectionMatrix[16];
 float _interfaceProjectionMatrix[16];
@@ -21,9 +19,10 @@ int _screenWidth, _screenHeight;
 
 void initCamera()
 {
-	vectorSet(_moveDir, 0.0f, 0.0f, 0.0f);
-	vectorSet(_camPos, DEFAULT_CAMERA_POSITION);
-	vectorSet(_camAngle, DEFAULT_CAMERA_ANGLE);
+	vectorCopy(_camVelocity, nullVec);
+	vectorCopy(_camRotation, nullVec);
+	vectorSet(_camPosition, 0.0f, -10.0f, 0.0f);
+	vectorSet(_camAngles, 0.0f, 90.0f, 0.0f);
 }
 
 void setCameraSize(int width, int height)
@@ -34,102 +33,75 @@ void setCameraSize(int width, int height)
 	_screenHeight = height;
 }
 
-void setCameraPosition(float pos[3])
+void engine_setCameraPosition(float position[3])
 {
-	vectorCopy(_camPos, pos);
+	vectorCopy(_camPosition, position);
 }
 
-void setCameraMovementDirection(float dir[3])
-{ // We expect dir to be normalized, but I guess its length can be used as a speed multiplier
-	vectorCopy(_moveDir, dir);
-}
-
-void cameraInput(inputStruct_t input)
+void engine_moveCamera(float move[3])
 {
-	if (input.mouseButtons & INPUT_MOUSELEFT)
-	{
-		_camAngle[0] += input.mouseDelta[1];
-		_camAngle[1] -= input.mouseDelta[0];
-
-		if (_camAngle[0] < -85)
-			_camAngle[0] = -85;
-		if (_camAngle[0] > 85)
-			_camAngle[0] = 85;
-
-		if (_camAngle[1] < -180)
-			_camAngle[1] += 360;
-		if (_camAngle[1] > 180)
-			_camAngle[1] -= 360;
-	}
-
-	if (input.key_timeHeld('z') > 0)
-	{
-		_moveDir[1] += 1.0f;
-	}
-	else if (input.key_timeHeld('Z') > 0)
-	{
-		_moveDir[1] += 2.0f;
-	}
-
-	if (input.key_timeHeld('s') > 0)
-	{
-		_moveDir[1] -= 1.0f;
-	}
-	else if (input.key_timeHeld('S') > 0)
-	{
-		_moveDir[1] -= 2.0f;
-	}
-
-	if (input.key_timeHeld('d') > 0)
-	{
-		_moveDir[0] += 1.0f;
-	}
-	else if (input.key_timeHeld('D') > 0)
-	{
-		_moveDir[0] += 2.0f;
-	}
-
-	if (input.key_timeHeld('q') > 0)
-	{
-		_moveDir[0] -= 1.0f;
-	}
-	else if (input.key_timeHeld('Q') > 0)
-	{
-		_moveDir[0] -= 2.0f;
-	}
-
-	if (input.key_timeHeld(' ') > 0)
-	{
-		_moveDir[2] += 1.0f;
-	}
-
-	if (input.key_timeHeld('x') > 0 || input.key_timeHeld('X') > 0)
-	{
-		_moveDir[2] -= 1.0f;
-	}
+	vectorAdd(_camPosition, _camPosition, move);
 }
 
-void updateCamera(timeStruct_t time, inputStruct_t input)
+void engine_setCameraVelocity(float velocity[3])
+{ // NOTE: The velocity is calculated relatively to the camera's local axis
+	vectorCopy(_camVelocity, velocity);
+}
+
+void engine_setCameraAngles(float angles[3])
+{
+	vectorCopy(_camAngles, angles);
+}
+
+void engine_rotateCamera(float rotation[3])
+{
+	vectorAdd(_camAngles, _camAngles, rotation);
+}
+
+void engine_setCameraRotation(float rotation[3])
+{
+	vectorCopy(_camRotation, rotation);
+}
+
+void engine_getViewMatrix(float out[16])
+{
+	mat_multiply(out, _renderProjectionMatrix, _renderModelViewMatrix);
+}
+
+void _clampCameraAngles()
+{
+	if (_camAngles[0] < -85)
+		_camAngles[0] = -85;
+	if (_camAngles[0] > 85)
+		_camAngles[0] = 85;
+
+	if (_camAngles[1] < -180)
+		_camAngles[1] += 360;
+	if (_camAngles[1] > 180)
+		_camAngles[1] -= 360;
+}
+
+void updateGLCamera(timeStruct_t time, inputStruct_t input)
 {
 	float forward[3], right[3];
 	float movement[3];
-	
-	if (enableCameraMovement)
-	{
-		cameraInput(input);
-	}
 
-	AngleVectors(_camAngle, forward, right, NULL);
+	// Apply rotation
+	vectorMA(_camAngles, _camAngles, time.deltaTimeSeconds, _camRotation);
+
+	_clampCameraAngles();
+
+	// Get the camera's local axis
+	AngleVectors(_camAngles, forward, right, NULL);
 
 	// Update the camera position (cheap method because math is hard)
-	vectorScale(movement, _moveDir[2], axis[2]);
-	vectorMA(movement, movement, _moveDir[1], forward);
-	vectorMA(movement, movement, _moveDir[0], right);
+	vectorScale(movement, _camVelocity[2], axis[2]);
+	vectorMA(movement, movement, _camVelocity[1], forward);
+	vectorMA(movement, movement, _camVelocity[0], right);
 	
-	vectorMA(_camPos, _camPos, cameraSpeed * time.deltaTimeSeconds, movement);
-	vectorSet(_moveDir, 0.0f, 0.0f, 0.0f);
+	vectorMA(_camPosition, _camPosition, time.deltaTimeSeconds, movement);
 
-	mat_viewModel(_renderModelViewMatrix, _camPos, _camAngle);
+	mat_viewModel(_renderModelViewMatrix, _camPosition, _camAngles);
 }
 
 void positionGLCameraForRender()

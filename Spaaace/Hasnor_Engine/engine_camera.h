@@ -10,18 +10,18 @@ engine_camera
 - Handles the camera's position
 */
 
-#define DEFAULT_CAMERA_POSITION 0.0f,-10.0f,0.0f
-#define DEFAULT_CAMERA_ANGLE 0.0f,90.0f,0.0f
-
-extern bool enableCameraMovement;
-extern float cameraSpeed;
-
 void initCamera();
 void setCameraSize(int width, int height);
-void setCameraPosition(float pos[3]);
-void setCameraMovementDirection(float dir[3]);
-void updateCamera(timeStruct_t time, inputStruct_t input);
+void updateGLCamera(timeStruct_t time, inputStruct_t input);
 void positionGLCameraForRender();
 void positionGLCameraForInterface();
+
+void engine_setCameraPosition(float position[3]);
+void engine_moveCamera(float move[3]);
+void engine_setCameraVelocity(float velocity[3]);
+void engine_setCameraAngles(float angles[3]);
+void engine_rotateCamera(float rotation[3]);
+void engine_setCameraRotation(float rotation[3]);
+void engine_getViewMatrix(float out[16]);
 
 #endif

@@ -41,7 +41,6 @@ void createWindow(window_t *window)
 
 	initCamera();
 	setCameraSize(window->width, window->height);
-	enableCameraMovement = true;
 
 	glutReshapeFunc(reshape);
 }

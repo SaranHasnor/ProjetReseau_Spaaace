@@ -83,8 +83,8 @@ int keyTimeHeld(unsigned char key)
 	inputKey_t *curKey = _heldKeys;
 	while (curKey)
 	{
-		//if (charsEqualCaseInsensitive(curKey->key, key))
-		if (curKey->key == key)
+		//if (curKey->key == key)
+		if (charsEqualCaseInsensitive(curKey->key, key))
 		{
 			if (curKey->onInterface)
 			{

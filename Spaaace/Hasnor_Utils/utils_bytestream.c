@@ -2,8 +2,6 @@
 #include "utils_ctools.h"
 #include "utils_types.h"
 
-#include <string.h>
-
 void bytestream_init(bytestream *stream, unsigned int size)
 {
 	if (size)
@@ -24,7 +22,7 @@ int bytestream_write(bytestream *stream, byte *data, unsigned int size)
 	assert(stream->cursor + size <= stream->len);
 	if (size > 0)
 	{
-		memcpy(stream->data+stream->cursor, data, size);
+		mem_cpy(stream->data+stream->cursor, data, size);
 	}
 	stream->cursor += size;
 	return size;
@@ -33,7 +31,7 @@ int bytestream_write(bytestream *stream, byte *data, unsigned int size)
 int bytestream_read(bytestream *stream, byte *out, unsigned int size)
 {
 	assert(stream->cursor + size <= stream->len);
-	memcpy(out, stream->data+stream->cursor, size);
+	mem_cpy(out, stream->data+stream->cursor, size);
 	stream->cursor += size;
 	return size;
 }

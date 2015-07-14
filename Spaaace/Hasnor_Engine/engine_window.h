@@ -11,8 +11,4 @@ typedef struct {
 	int		width, height;
 } window_t;
 
-// Window settings
-#define DEFAULT_WIDTH 1200
-#define DEFAULT_HEIGHT 600
-
 void createWindow(window_t *window);

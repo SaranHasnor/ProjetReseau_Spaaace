@@ -164,6 +164,11 @@ void mem_set(void *mem, int val, size_t size)
 	memset(mem, val, size);
 }
 
+void mem_cpy(void *mem, void *src, size_t size)
+{
+	memcpy(mem, src, size);
+}
+
 size_t mem_size(void *mem)
 {
 	mem_t *mem2 = alloc;
