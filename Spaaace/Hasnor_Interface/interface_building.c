@@ -190,6 +190,7 @@ int interface_list(placement_t placement, anchor_t textAnchor, void (*onSelect)(
 
 	// FIXME
 	//list->maxDisplayedEntries = (int)(((float)placement-40.0)/15.0);
+	list->maxDisplayedEntries = 500;
 
 	return component->id;
 }
