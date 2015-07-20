@@ -157,11 +157,11 @@ void mouse(int button, int state, int x, int y)
 
 	if (state == GLUT_DOWN)
 	{
-		_inputListener.mouseDownFunc(actualButton);
+		_inputListener.mouseDownFunc(actualButton, x, y);
 	}
 	else
 	{
-		_inputListener.mouseUpFunc(actualButton);
+		_inputListener.mouseUpFunc(actualButton, x, y);
 	}
 }
 
