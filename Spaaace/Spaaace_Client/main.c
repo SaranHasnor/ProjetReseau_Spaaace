@@ -19,12 +19,12 @@ void keyUpFunc(uchar key)
 
 }
 
-void mouseDownFunc(ushort button)
+void mouseDownFunc(ushort button, int x, int y)
 {
 
 }
 
-void mouseUpFunc(ushort button)
+void mouseUpFunc(ushort button, int x, int y)
 {
 
 }
