@@ -8,7 +8,8 @@ void PlayerClient_init()
 
     list_init(&ClientPlayerList);
 
-    string_initStr(&message, "New Player:0,0,0;0;0!");
+    //string_initStr(&message, "New Player:0,0,0;0;0!");
+    string_initStr(&message, "Player Connect:!");
     bytestream_init(&stream, message.len);
     bytestream_write(&stream, message.s, message.len);
 
@@ -23,7 +24,7 @@ void RenderClient(float viewMatrix[16])
     for (int i = 0; i < ClientPlayerList.size; i++)
     {
         player = ((ClientPlayer_t*)ClientPlayerList.content[i]);
-        renderMesh(player->PlayerMesh, viewMatrix);
+        //renderMesh(player->PlayerMesh, viewMatrix);
     }
 }
 
@@ -81,9 +82,9 @@ void CreateNewPlayerStringMessage(string message)
 void CreateNewPlayer(float position[3], int kill, int death)
 {
     face_t *tempFace;
-    ClientPlayer_t newPlayer;
+    ClientPlayer_t *newPlayer = (ClientPlayer_t*)mem_alloc(sizeof(ClientPlayer_t));
 
-    newPlayer.PlayerMesh = newMesh();
+    newPlayer->PlayerMesh = newMesh();
 
     // Each face must be a triangle
     tempFace = addFace();
@@ -98,18 +99,18 @@ void CreateNewPlayer(float position[3], int kill, int death)
     addVertex(-0.5f, 2.0f, -0.25f, 0.0f, 0.0f);
     addVertex(-0.5f, 1.0f, 0.25f, 1.0f, 0.0f);
 
-    updateMeshGeometry(newPlayer.PlayerMesh);
+    updateMeshGeometry(newPlayer->PlayerMesh);
 
-    vectorCopy(newPlayer.PlayerMesh->origin, position);
+    vectorCopy(newPlayer->PlayerMesh->origin, position);
 
-    CreatePlayer(position, kill, death, &newPlayer.Player);
+    CreatePlayer(position, kill, death, &newPlayer->Player);
 
     list_add(&ClientPlayerList, &newPlayer);
 }
 
 void GetPlayerWithId(int playerId, ClientPlayer_t* outSpacePlayer)
 {
-    ClientPlayer_t* player = NULL;
+    ClientPlayer_t *player = (ClientPlayer_t*)mem_alloc(sizeof(ClientPlayer_t));
     outSpacePlayer = NULL;
     for (int i = 0; i < ClientPlayerList.size; i++)
     {
@@ -127,7 +128,7 @@ void PlayerWantToMove(float position[3])
     string message;
     string floatToCharTmp;
 
-    string_initStr(&message, "PlayerPosition :");
+    string_initStr(&message, "PlayerPosition:");
     string_initFloat(&floatToCharTmp, position[0]);
     string_appendStr(&message, floatToCharTmp.s);
     string_appendStr(&message, ",");
@@ -136,8 +137,15 @@ void PlayerWantToMove(float position[3])
     string_appendStr(&message, ",");
     string_initFloat(&floatToCharTmp, position[2]);
     string_appendStr(&message, floatToCharTmp.s);
+    string_appendStr(&message, ";");
 
-    CL_sendMessage(-1, message);
+    //my player Id
+    string_appendStr(&message, "0");
+
+    //endMessage
+    string_appendStr(&message, "!");
+
+    //CL_sendMessage(-1, message);
 }
 
 void MovePlayer(float position[3], int PlayerId)
@@ -147,8 +155,21 @@ void MovePlayer(float position[3], int PlayerId)
     if (&player != NULL)
     {
         SetPlayerPosition(&player.Player, position);
-        vectorCopy(player.PlayerMesh->origin,position);
+        //erreur sur l'attribution du mesh
+        //vectorCopy(player.PlayerMesh->origin,position);
     }
     else
         printf("Erreur dans la recherche de l'Id demandé.");
+}
+
+void MovePlayerMessage(string message)
+{
+    float position[3];
+    string str_position;
+    string_initStr(&str_position, "");
+    str_substring(message, ';', &str_position);
+
+    ExtractPosition(str_position, position);
+
+    MovePlayer(position, 0);
 }

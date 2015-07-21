@@ -52,11 +52,11 @@ void string_appendStr(string *str, char *value)
 int str_indexof(string str, char chr)
 {
     int i = 0;
-    while (str.s[i] != chr && i < str.len)
+    while (str.s[i] != chr && i < str.len+1)
     {
         i++;
     }
-    if (i != str.len - 1)
+    if (i != str.len)
         return i;
     return -1;
 }

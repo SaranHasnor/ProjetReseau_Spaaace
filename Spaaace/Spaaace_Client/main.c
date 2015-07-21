@@ -34,9 +34,10 @@ void mouseUpFunc(ushort button, int x, int y)
 
 }
 
-float playerPosition[3] = { 0, 0, 0 };
+
 void updateCamera(inputStruct_t input)
 {
+    float cameraPosition[3];
 	float velocity[3] = {0,0,0};
     float cameraAngle[3];
 
@@ -54,37 +55,38 @@ void updateCamera(inputStruct_t input)
 
 	if (input.key_timeHeld('z') > 0)
 	{
-        playerPosition[1] += 0.01f;
+        velocity[1] += 1.00f;
 	}
 
 	if (input.key_timeHeld('s') > 0)
 	{
-        playerPosition[1] -= 0.01f;
+        velocity[1] -= 1.00f;
 	}
 
 	if (input.key_timeHeld('d') > 0)
 	{
-        playerPosition[0] += 0.01f;
+        velocity[0] += 1.00f;
 	}
 
 	if (input.key_timeHeld('q') > 0)
 	{
-        playerPosition[0] -= 0.01f;
+        velocity[0] -= 1.00f;
 	}
 
 	if (input.key_timeHeld(' ') > 0)
 	{
-        playerPosition[2] += 0.01f;
+        velocity[2] += 1.00f;
 	}
 
 	if (input.key_timeHeld('x') > 0)
 	{
-        playerPosition[2] -= 0.01f;
+        velocity[2] -= 1.00f;
 	}
 
     //engine_setCameraPosition(playerPosition);
 	engine_setCameraVelocity(velocity);
-
+    engine_getCameraPosition(&cameraPosition);
+    PlayerWantToMove(cameraPosition);
 
     //testMesh->origin[0] = playerPosition[0];
     //testMesh->origin[1] = playerPosition[1];
@@ -111,6 +113,7 @@ void MessageListener(networkUpdate_t update)
 
     for (int i = 0; i < update.count; i++)
     {
+        printMessage(update.messages[i]);
         char buffer[128]; // taille max du message
         bytestream_read(&update.messages[i].content, buffer, update.messages[i].content.len);
         string_initStr(&strMessageByte, buffer);
@@ -120,6 +123,11 @@ void MessageListener(networkUpdate_t update)
         {
             str_substringIndex(strMessage, headerMessage.len + 1, strMessage.len, &messageContent);
             CreateNewPlayerStringMessage(messageContent);
+        }
+        else if (strcmp(headerMessage.s, "PlayerPosition") == 0)
+        {
+            str_substringIndex(strMessage, headerMessage.len + 1, strMessage.len, &messageContent);
+            MovePlayerMessage(messageContent);
         }
     }
 }
