@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <engine.h>
 #include <engine_interface.h>
-#include <engine_render.h>
+//#include <engine_render.h>
 #include <engine_utils.h>
 #include <utils_matrix.h>
 #include <game.h>
-#include <Player.h>
+#include "PlayerClient.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -34,7 +34,6 @@ void mouseUpFunc(ushort button, int x, int y)
 }
 
 float playerPosition[3] = { 0, 0, 0 };
-mesh_t *testMesh;
 void updateCamera(inputStruct_t input)
 {
 	float velocity[3] = {0,0,0};
@@ -86,45 +85,16 @@ void updateCamera(inputStruct_t input)
 	engine_setCameraVelocity(velocity);
 
 
-    testMesh->origin[0] = playerPosition[0];
-    testMesh->origin[1] = playerPosition[1];
-    testMesh->origin[2] = playerPosition[2];
+    //testMesh->origin[0] = playerPosition[0];
+    //testMesh->origin[1] = playerPosition[1];
+    //testMesh->origin[2] = playerPosition[2];
 }
 
 void initEngine()
 {
-    face_t *tempFace;
-    
-    //CreatePlayer(0, 0, 0, true); test
-
-    engine_setCameraPosition(playerPosition);
-    engine_setCameraRotation(playerPosition);
-
-    //UI
-    interface_pushBlock(relativePlacement(0.48f, 0.48f, 0.04f, 0.04f));
-    interface_staticLabel("--", relativePlacement(0, 1, 1, 1), ANCHOR_CENTER);
-    interface_staticLabel("--", relativePlacement(0, -1, 1, 1), ANCHOR_CENTER);
-    interface_staticLabel("+", relativePlacement(0, 0, 1, 1), ANCHOR_CENTER);
-    interface_staticLabel("|", relativePlacement(1, 0, 1, 1), ANCHOR_CENTER);
-    interface_staticLabel("|", relativePlacement(-1, 0, 1, 1), ANCHOR_CENTER);
-    interface_popBlock();
-
-	testMesh = newMesh();
-
-	// Each face must be a triangle
-	tempFace = addFace();
-	tempFace->color[0] = 0.0f;
-	addVertex(0.5f, 1.0f, -0.25f, 0.0f, 1.0f);
-	addVertex(0.5f, 2.0f, -0.25f, 0.0f, 0.0f);
-	addVertex(0.5f, 1.0f, 0.25f, 1.0f, 0.0f);
-		
-	tempFace = addFace();
-	tempFace->color[1] = 0.0f;
-    addVertex(-0.5f, 1.0f, -0.25f, 0.0f, 1.0f);
-    addVertex(-0.5f, 2.0f, -0.25f, 0.0f, 0.0f);
-    addVertex(-0.5f, 1.0f, 0.25f, 1.0f, 0.0f);
-
-	updateMeshGeometry(testMesh);
+    setupNetwork();
+    InitializePlayerClient();
+    CreateNewPlayer(false);
 }
 
 void updateFunc(timeStruct_t time, inputStruct_t input)
@@ -148,12 +118,14 @@ void renderFunc(void)
 
 	engine_getViewMatrix(viewMatrix);
 
-	renderMesh(testMesh, viewMatrix);
+	//renderMesh(testMesh, viewMatrix);
 }
 
 int main(int argc, char **argv)
 {
 	engineListener_t listener;
+
+    time_init();
 
 	listener.keyDownFunc = keyDownFunc;
 	listener.keyUpFunc = keyUpFunc;

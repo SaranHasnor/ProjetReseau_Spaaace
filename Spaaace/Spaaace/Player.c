@@ -7,7 +7,7 @@ unsigned int _MaxPlayer = 2;
 SpacePlayer_t MyPlayer;
 SpacePlayer_t* PlayerList;
 
-void Initialize()
+void InitializePlayerList()
 {
     PlayerList = (SpacePlayer_t*)mem_alloc(sizeof(SpacePlayer_t) * _MaxPlayer);
 }
@@ -37,7 +37,7 @@ void CreatePlayer(float posX, float posY, float posZ, bool isMine, int* outId)
 
     PlayerList[newPlayerIndex] = newPlayer;
 
-    *outId = newPlayerIndex;
+    outId = newPlayerIndex;
 
     newPlayerIndex++;
 }
