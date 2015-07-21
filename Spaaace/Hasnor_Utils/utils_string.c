@@ -76,30 +76,6 @@ void str_substring(string message, char limitChar, string* outString)
     //mem_free(substring);
 }
 
-void str_substringChar(string message,char begin, char limitChar, string* outString)
-{
-    int index = 0;
-    int i = 0;
-    int len = str_indexof(message, limitChar) - begin;
-    bool addstring = false;
-    char* substring = (char*)mem_alloc(sizeof(char) * len);
-
-    while (i < message.len && message.s[i] != limitChar)
-    {
-        if (message.s[i] == begin)
-            addstring = true;
-        if (addstring)
-        {
-            substring[index] = message.s[i];
-            index++;
-        }
-        i++;
-    }
-    substring[len] = '\0';
-    string_appendStr(outString, substring);
-    //mem_free(substring);
-}
-
 void str_substringIndex(string message, int begin, int end, string* outString)
 {
     int index = 0;
@@ -109,6 +85,7 @@ void str_substringIndex(string message, int begin, int end, string* outString)
     for (int i = begin; i < end; i++)
     {
         substring[index] = message.s[i];
+        index++;
     }
 
     substring[len] = '\0';

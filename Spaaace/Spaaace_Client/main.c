@@ -9,6 +9,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <string.h>
 
 void keyDownFunc(uchar key)
 {
@@ -96,10 +97,9 @@ void initEngine()
     PlayerClient_init();
 }
 
-networkUpdate_t update;
-networkStatus_t status;
-void MessageListener()
+void MessageListener(networkUpdate_t update)
 {
+
     string strMessageByte;
     string strMessage;
     string headerMessage;
@@ -116,7 +116,7 @@ void MessageListener()
         string_initStr(&strMessageByte, buffer);
         str_substring(strMessageByte, '!', &strMessage);
         str_substring(strMessage, ':', &headerMessage);
-        if (strchr(headerMessage.s , "New Player") !=0)
+        if (strcmp(headerMessage.s , "New Player") == 0)
         {
             str_substringIndex(strMessage, headerMessage.len + 1, strMessage.len, &messageContent);
             CreateNewPlayerStringMessage(messageContent);
@@ -126,6 +126,8 @@ void MessageListener()
 
 void updateFunc(timeStruct_t time, inputStruct_t input)
 {
+    networkUpdate_t update;
+
 	if (time.deltaTime == time.currentTime)
 	{
 		initEngine();
@@ -140,7 +142,7 @@ void updateFunc(timeStruct_t time, inputStruct_t input)
         CL_update(&update);
         if (update.count > 0)
         {
-            MessageListener();
+            MessageListener(update);
         }
     }
 }
@@ -153,6 +155,7 @@ void renderFunc(void)
 
 	engine_getViewMatrix(viewMatrix);
 
+    RenderClient(viewMatrix);
 	//renderMesh(testMesh, viewMatrix);
 }
 

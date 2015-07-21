@@ -17,6 +17,7 @@ list_t ClientPlayerList;
 int MyPlayerId;
 
 void PlayerClient_init();
+void RenderClient(float viewMatrix[16]);
 void CreateNewPlayerStringMessage(string message);
 void CreateNewPlayer(float position[3], int kill, int death);
 void PlayerWantToMoveTo(float position[3], int PlayerId);
