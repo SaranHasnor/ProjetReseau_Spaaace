@@ -2,12 +2,11 @@
 
 float Speed = 1.0f;
 float MaxLife = 100;
-unsigned int newPlayerIndex = 1;
+unsigned int newPlayerIndex = 0;
 unsigned int _MaxPlayer = 2;
-SpacePlayer_t MyPlayer;
 SpacePlayer_t* PlayerList;
 
-void InitializePlayerList()
+void PlayerList_init()
 {
     PlayerList = (SpacePlayer_t*)mem_alloc(sizeof(SpacePlayer_t) * _MaxPlayer);
 }
@@ -17,42 +16,23 @@ void ChangeMaxLife(float maxLife)
     MaxLife = maxLife;
 }
 
-void CreatePlayer(float posX, float posY, float posZ, bool isMine, int* outId)
+void CreatePlayer(float Position[3], int kill, int death )
 {
     SpacePlayer_t newPlayer;
 
-    newPlayer.Id = newPlayerIndex;
-    newPlayer.PositionX = posX;
-    newPlayer.PositionY = posY;
-    newPlayer.PositionZ = posZ;
-    newPlayer.Speed = Speed;
-    newPlayer.Life = MaxLife;
-    newPlayer.Kill = 0;
-    newPlayer.Death = 0;
-
-    if (isMine)
-    {
-        MyPlayer = newPlayer;
-    }
-
-    PlayerList[newPlayerIndex] = newPlayer;
-
-    outId = newPlayerIndex;
+    PlayerList[newPlayerIndex].Id = newPlayerIndex;
+    PlayerList[newPlayerIndex].Position = Position;
+    PlayerList[newPlayerIndex].Speed = Speed;
+    PlayerList[newPlayerIndex].Life = MaxLife;
+    PlayerList[newPlayerIndex].Kill = 0;
+    PlayerList[newPlayerIndex].Death = 0;
 
     newPlayerIndex++;
 }
 
-void SetPlayerPosition(int playerId, float posX, float posY, float posZ)
+void SetPlayerPosition(int playerId, float Position[3])
 {
-    if (MyPlayer.Id = playerId)
-    {
-        MyPlayer.PositionX = posX;
-        MyPlayer.PositionY = posY;
-        MyPlayer.PositionZ = posZ;
-    }
-    PlayerList[playerId].PositionX = posX;
-    PlayerList[playerId].PositionY = posY;
-    PlayerList[playerId].PositionZ = posZ;
+    PlayerList[playerId].Position = Position;
 }
 
 void PlayerTakeDamage(int PlayerId, float AttackValue, bool* outIsInLife)

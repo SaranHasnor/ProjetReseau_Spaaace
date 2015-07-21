@@ -8,11 +8,13 @@
 #include <network_client.h>
 
 typedef struct {
-    int PlayerId;
-    int NetworkPlayerId;
+    SpacePlayer_t PlayerId;
     mesh_t* PlayerMesh;
 } ClientPlayer_t;
 
+ClientPlayer_t* ClientPlayerList;
+
+void ClientPlayerInitialize();
 void CreateNewPlayer(bool isMine);
 void PlayerWantToMoveTo(float posX, float posY, float posZ);
 

@@ -17,6 +17,7 @@ int main(int argc, char **argv)
 
     while (true)
     {
+        SV_checkForNewClients();
         SV_update(&update);
         for (int i = 0; i < update.count; i++)
             printMessage(update.messages[i]);
