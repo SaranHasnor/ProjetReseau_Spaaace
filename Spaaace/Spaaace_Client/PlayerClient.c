@@ -6,7 +6,10 @@ void PlayerClient_init()
     bytestream stream;
     networkStatus_t status;
 
-    string_initStr(&message, "New Player");
+    list_init(&ClientPlayerList);
+
+    string_initStr(&message, "New Player:0,0,0;0;0!");
+    bytestream_init(&stream, message.len);
     bytestream_write(&stream, message.s, message.len);
 
     CL_connectToServer("127.0.0.1", 4657, stream, SOCKET_PROTOCOL_TCP, &status);
@@ -14,13 +17,47 @@ void PlayerClient_init()
         printError(status);
 }
 
-void CreateNewPlayer(bool isMine)
+void ExtractPosition(string str_position, float position[3])
+{
+    string str_positionX;
+    string str_positionY;
+    string str_positionZ;
+
+    str_substring(str_position, ',', &str_positionX);
+    str_substringChar(str_position, ',', ',', &str_positionY);
+    str_substringIndex(str_position, str_positionX.len + str_positionY.len + 2, str_position.len, &str_positionZ);
+
+    position[0] = parseFloat(str_positionX.s);
+    position[1] = parseFloat(str_positionY.s);
+    position[2] = parseFloat(str_positionZ.s);
+}
+
+void CreateNewPlayerStringMessage(string message)
+{
+    string str_position;
+    string str_kill;
+    string str_death;
+
+    float position[3];
+    int kill;
+    int death;
+
+    str_substring(message, ';', &str_position);
+    str_substringChar(message, ';', ';', &str_kill);
+    str_substringIndex(message, str_position.len + str_kill.len + 2, message.len, &str_death);
+
+    ExtractPosition(str_position, position);
+
+    kill = parseInt(str_kill.s);
+    death = parseInt(str_death.s);
+
+    CreateNewPlayer(position, kill, death);
+}
+
+void CreateNewPlayer(float position[3], int kill, int death)
 {
     face_t *tempFace;
     ClientPlayer_t newPlayer;
-    PlayerId_t playerId;
-
-    string strPlayerId;
 
     newPlayer.PlayerMesh = newMesh();
 
@@ -39,11 +76,50 @@ void CreateNewPlayer(bool isMine)
 
     updateMeshGeometry(newPlayer.PlayerMesh);
 
-    newPlayer.PlayerId = -1;
-    CreatePlayer(0, 0, 0, isMine, &playerId);
+    CreatePlayer(0, 0, 0, &newPlayer.Player);
+
+    list_add(&ClientPlayerList, &newPlayer);
 }
 
-void MovePlayer(float posX, float posY, float posZ)
+void GetPlayerWithId(int playerId, SpacePlayer_t* outSpacePlayer)
 {
+    SpacePlayer_t* player=NULL;
+    outSpacePlayer = NULL;
+    for (int i = 0; i < ClientPlayerList.size; i++)
+    {
+        player = ((SpacePlayer_t*)(ClientPlayerList.content[i]));
+        if (player->Id == playerId)
+        {
+            outSpacePlayer = player;
+            break;
+        }
+    }
+}
 
+void PlayerWantToMove(float position[3])
+{
+    string message;
+    string floatToCharTmp;
+
+    string_initStr(&message, "PlayerPosition :");
+    string_initFloat(&floatToCharTmp, position[0]);
+    string_appendStr(&message, floatToCharTmp.s);
+    string_appendStr(&message, ",");
+    string_initFloat(&floatToCharTmp, position[1]);
+    string_appendStr(&message, floatToCharTmp.s);
+    string_appendStr(&message, ",");
+    string_initFloat(&floatToCharTmp, position[2]);
+    string_appendStr(&message, floatToCharTmp.s);
+
+    CL_sendMessage(-1, message);
+}
+
+void MovePlayer(float position[3], int PlayerId)
+{
+    SpacePlayer_t* player;
+    GetPlayerWithId(PlayerId, player);
+    if (player != NULL)
+        SetPlayerPosition(player, position);
+    else
+        printf("Erreur dans la recherche de l'Id demandé.");
 }

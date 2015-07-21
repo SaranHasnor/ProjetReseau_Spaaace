@@ -14,9 +14,8 @@ typedef struct {
     int Kill;
 } SpacePlayer_t;
 
-void InitializePlayerList();
-void CreatePlayer(float Position[3], int kill, int death);
-void SetPlayerPosition(int playerId, float posX, float posY, float posZ);
-void PlayerTakeDamage(int PlayerId, float AttackValue, bool *outIsInLife);
+void CreatePlayer(float Position[3], int kill, int death, SpacePlayer_t* outSpacePlayer);
+void SetPlayerPosition(SpacePlayer_t* player, float position[3]);
+void PlayerTakeDamage(SpacePlayer_t* Player, float AttackValue, bool *outIsInLife);
 
 #endif

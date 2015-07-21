@@ -48,3 +48,70 @@ void string_appendStr(string *str, char *value)
 	strcpy(str->s + str->len, value);
 	str->len = newLen;
 }
+
+int str_indexof(string str, char chr)
+{
+    int i = 0;
+    while (str.s[i] != chr && i < str.len)
+    {
+        i++;
+    }
+    if (i != str.len - 1)
+        return i;
+    return -1;
+}
+
+void str_substring(string message, char limitChar, string* outString)
+{
+    int i = 0;
+    int len = str_indexof(message, limitChar);
+    char* substring = (char*)mem_alloc(sizeof(char) * len);
+    while (i < len)
+    {
+        substring[i] = message.s[i];
+        i++;
+    }
+    substring[len] = '\0';
+    string_appendStr(outString, substring);
+    //mem_free(substring);
+}
+
+void str_substringChar(string message,char begin, char limitChar, string* outString)
+{
+    int index = 0;
+    int i = 0;
+    int len = str_indexof(message, limitChar) - begin;
+    bool addstring = false;
+    char* substring = (char*)mem_alloc(sizeof(char) * len);
+
+    while (i < message.len && message.s[i] != limitChar)
+    {
+        if (message.s[i] == begin)
+            addstring = true;
+        if (addstring)
+        {
+            substring[index] = message.s[i];
+            index++;
+        }
+        i++;
+    }
+    substring[len] = '\0';
+    string_appendStr(outString, substring);
+    //mem_free(substring);
+}
+
+void str_substringIndex(string message, int begin, int end, string* outString)
+{
+    int index = 0;
+    int len = end - begin;
+    char* substring = (char*)mem_alloc(sizeof(char) * len);
+
+    for (int i = begin; i < end; i++)
+    {
+        substring[index] = message.s[i];
+    }
+
+    substring[len] = '\0';
+    string_appendStr(outString, substring);
+    //mem_free(substring);
+}

@@ -93,8 +93,35 @@ void updateCamera(inputStruct_t input)
 void initEngine()
 {
     setupNetwork();
-    InitializePlayerClient();
-    CreateNewPlayer(false);
+    PlayerClient_init();
+}
+
+networkUpdate_t update;
+networkStatus_t status;
+void MessageListener()
+{
+    string strMessageByte;
+    string strMessage;
+    string headerMessage;
+    string messageContent;
+
+    string_initStr(&strMessage, "");
+    string_initStr(&headerMessage, "");
+    string_initStr(&messageContent, "");
+
+    for (int i = 0; i < update.count; i++)
+    {
+        char buffer[128]; // taille max du message
+        bytestream_read(&update.messages[i].content, buffer, update.messages[i].content.len);
+        string_initStr(&strMessageByte, buffer);
+        str_substring(strMessageByte, '!', &strMessage);
+        str_substring(strMessage, ':', &headerMessage);
+        if (strchr(headerMessage.s , "New Player") !=0)
+        {
+            str_substringIndex(strMessage, headerMessage.len + 1, strMessage.len, &messageContent);
+            CreateNewPlayerStringMessage(messageContent);
+        }
+    }
 }
 
 void updateFunc(timeStruct_t time, inputStruct_t input)
@@ -108,6 +135,14 @@ void updateFunc(timeStruct_t time, inputStruct_t input)
 	//mat_rotation(testMesh->rotation, 20.0f * testMesh->origin[2], 50.0f * testMesh->origin[2], 0.0f);
 
 	updateCamera(input);
+    if (CL_connected())
+    {
+        CL_update(&update);
+        if (update.count > 0)
+        {
+            MessageListener();
+        }
+    }
 }
 
 void renderFunc(void)

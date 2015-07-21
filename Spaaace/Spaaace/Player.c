@@ -2,14 +2,9 @@
 
 float Speed = 1.0f;
 float MaxLife = 100;
-unsigned int newPlayerIndex = 0;
 unsigned int _MaxPlayer = 2;
-SpacePlayer_t* PlayerList;
 
-void PlayerList_init()
-{
-    PlayerList = (SpacePlayer_t*)mem_alloc(sizeof(SpacePlayer_t) * _MaxPlayer);
-}
+int currentId = 0;
 
 void ChangeMaxLife(float maxLife)
 {
@@ -20,23 +15,27 @@ void CreatePlayer(float Position[3], int kill, int death )
 {
     SpacePlayer_t newPlayer;
 
-    PlayerList[newPlayerIndex].Id = newPlayerIndex;
-    PlayerList[newPlayerIndex].Position = Position;
-    PlayerList[newPlayerIndex].Speed = Speed;
-    PlayerList[newPlayerIndex].Life = MaxLife;
-    PlayerList[newPlayerIndex].Kill = 0;
-    PlayerList[newPlayerIndex].Death = 0;
+    newPlayer.Id = currentId;
+    newPlayer.Position[0] = Position[0];
+    newPlayer.Position[1] = Position[1];
+    newPlayer.Position[2] = Position[2];
+    newPlayer.Speed = Speed;
+    newPlayer.Life = MaxLife;
+    newPlayer.Kill = 0;
+    newPlayer.Death = 0;
 
-    newPlayerIndex++;
+    currentId++;
 }
 
-void SetPlayerPosition(int playerId, float Position[3])
+void SetPlayerPosition(SpacePlayer_t* Player, float Position[3])
 {
-    PlayerList[playerId].Position = Position;
+    Player->Position[0] = Position[0];
+    Player->Position[1] = Position[1];
+    Player->Position[2] = Position[2];
 }
 
-void PlayerTakeDamage(int PlayerId, float AttackValue, bool* outIsInLife)
+void PlayerTakeDamage(SpacePlayer_t* Player, float AttackValue, bool* outIsInLife)
 {
-    PlayerList[PlayerId].Life -= AttackValue;
-    outIsInLife = PlayerList[PlayerId].Life < 1;
+    Player->Life -= AttackValue;
+    outIsInLife = Player->Life < 1;
 }

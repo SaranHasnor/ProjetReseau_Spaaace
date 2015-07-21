@@ -4,19 +4,22 @@
 #define _PLAYER_CLIENT_DEFINED
 
 #include "Player.h"
+#include <utils_list.h>
 #include <engine_render.h>
 #include <network_client.h>
 
 typedef struct {
-    SpacePlayer_t PlayerId;
+    SpacePlayer_t Player;
     mesh_t* PlayerMesh;
 } ClientPlayer_t;
 
-ClientPlayer_t* ClientPlayerList;
+list_t ClientPlayerList;
+int MyPlayerId;
 
-void ClientPlayerInitialize();
-void CreateNewPlayer(bool isMine);
-void PlayerWantToMoveTo(float posX, float posY, float posZ);
+void PlayerClient_init();
+void CreateNewPlayerStringMessage(string message);
+void CreateNewPlayer(float position[3], int kill, int death);
+void PlayerWantToMoveTo(float position[3], int PlayerId);
 
 
 #endif

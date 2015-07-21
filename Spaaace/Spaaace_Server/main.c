@@ -23,5 +23,7 @@ int main(int argc, char **argv)
             printMessage(update.messages[i]);
     }
 
+    SV_closeServer(&status);
+
 	return 0;
 }
