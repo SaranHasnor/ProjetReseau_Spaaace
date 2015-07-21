@@ -24,7 +24,6 @@ void string_strip(string *str, char c);
 void string_appendStr(string *str, char *value);
 
 void str_substring(string message, char limitChar, string* outString);
-void str_substringChar(string message, char begin, char limitChar, string* outString);
 void str_substringIndex(string message, int begin, int end, string* outString);
 
 #endif
