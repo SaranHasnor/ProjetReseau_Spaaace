@@ -70,10 +70,12 @@
   <ItemGroup>
     <ClCompile Include="game.c" />
     <ClCompile Include="Player.c" />
+    <ClCompile Include="projectile.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="projectile.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hasnor_Utils\Hasnor_Utils.vcxproj">

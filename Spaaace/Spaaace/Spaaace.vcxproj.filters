@@ -19,6 +19,7 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Player.c">
+    <ClCompile Include="projectile.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -27,6 +28,7 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
+    <ClInclude Include="projectile.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

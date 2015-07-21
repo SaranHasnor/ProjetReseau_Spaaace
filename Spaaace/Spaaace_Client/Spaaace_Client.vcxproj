@@ -85,11 +85,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="client_projectile.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="PlayerClient.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PlayerClient.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="client_projectile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
