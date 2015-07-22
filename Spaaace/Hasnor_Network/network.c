@@ -392,6 +392,7 @@ void sendMessage(networkMessageType_t type, int senderID, int receiverID, bytest
 			for (i = 1; i < _maxConnections; i++)
 			{
 				//if (_connections[i].id != message.senderID) // Actually including the sender too for now...
+				if (_connections[i].socket != INVALID_SOCKET)
 				{
 					if (!_doSend(&_connections[i], serializedMessage))
 					{

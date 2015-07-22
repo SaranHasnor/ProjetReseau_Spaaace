@@ -35,11 +35,9 @@ void RenderPlayer(SpacePlayer_t* player, float viewMatrix[16])
     renderMesh(playerMesh,viewMatrix);
 }
 
-SpacePlayer_t* CreateNewPlayer(bytestream message)
+SpacePlayer_t* CreateNewPlayer()
 {
     SpacePlayer_t *player = (SpacePlayer_t*)mem_alloc(sizeof(SpacePlayer_t));
-
-    Player_Deserialize(message, player);
 
     return player;
 }

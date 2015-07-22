@@ -26,7 +26,7 @@ void updateProjectile(projectile_t *projectile, float deltaTime)
 	vectorCopy(velNorm, projectile->vel);
 	speed = vectorNormalize(velNorm);
 
-	if (projectile->target)
+	if (projectile->target && *projectile->target)
 	{
 		float dir[3];
 		vectorSubtract(dir, *projectile->target, projectile->pos);

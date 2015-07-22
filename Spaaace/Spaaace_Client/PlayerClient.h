@@ -10,6 +10,6 @@ SpacePlayer_t* myPlayer;
 
 void CreatePlayerMesh();
 void RenderPlayer(SpacePlayer_t* player, float viewMatrix[16]);
-SpacePlayer_t* CreateNewPlayer(bytestream message);
+SpacePlayer_t* CreateNewPlayer();
 
 #endif

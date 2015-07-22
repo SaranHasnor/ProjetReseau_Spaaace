@@ -45,6 +45,10 @@ void MessageListener(networkUpdate_t update)
 				*player = net.content.player;
 			}
 		}
+		else if (update.messages[i].type == NETWORK_MESSAGE_EXIT)
+		{
+
+		}
     }
 }
 

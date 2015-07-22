@@ -9,6 +9,8 @@
 #include "client_projectile.h"
 #include <utils_time.h>
 
+#include "networkStruct.h"
+
 #include <GL/glut.h>
 
 #include <network_client.h>
@@ -103,6 +105,8 @@ void updateCamera(inputStruct_t input)
     //testMesh->origin[2] = playerPosition[2];
 }
 
+char* myRandomString = NULL;
+
 void initEngine()
 {
 	uint i;
@@ -124,7 +128,13 @@ void initEngine()
 		vectorScale(_stars[i], 100.0f, _stars[i]);
 	}
 
-    bytestream_init(&stream, 0);
+    bytestream_init(&stream, 16);
+	myRandomString = (char*)mem_alloc(sizeof(char)* 16);
+	for (i = 0; i < 16; i++)
+	{
+		myRandomString[i] = (char)randomIntBetween(0, 255);
+	}
+	bytestream_write(&stream, myRandomString, sizeof(char) * 16);
 
     CL_connectToServer("127.0.0.1", 4657, stream, SOCKET_PROTOCOL_TCP, &status);
     if (status.error != NETWORK_ERROR_NONE)
@@ -139,12 +149,35 @@ void MessageListener(networkUpdate_t update)
         
         if (update.messages[i].type == NETWORK_MESSAGE_CONNECT)
         {
-             list_add(&game.players,CreateNewPlayer(update.messages[i].content));
+			SpacePlayer_t *player = CreateNewPlayer();
+			list_add(&game.players, player);
+
+			if (myRandomString && !strcmp(myRandomString, update.messages[i].content.data))
+			{ // That's me!
+				myPlayer = player;
+			}
         }
 		else if (update.messages[i].type == NETWORK_MESSAGE_CUSTOM)
         { // Update
-            //MovePlayerMessage(messageContent);
+			networkStruct_t net;
+			SpacePlayer_t *player = GetPlayerWithId(i);
+			deserializeNetworkStruct(&update.messages[i].content, &net);
+
+			if (net.inputOnly)
+			{
+				player->input = net.content.input;
+			}
+			else
+			{
+				*player = net.content.player;
+			}
         }
+		else if (update.messages[i].type == NETWORK_MESSAGE_EXIT)
+		{
+			SpacePlayer_t *player = GetPlayerWithId(i);
+			list_remove(&game.players, player);
+			mem_free(player);
+		}
     }
 }
 
