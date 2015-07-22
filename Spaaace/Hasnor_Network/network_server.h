@@ -1,5 +1,4 @@
 #include "network_utils.h"
-#include <utils_string.h>
 
 extern void setupNetwork();
 extern void shutdownNetwork();
@@ -9,5 +8,5 @@ int SV_checkForNewClients();
 void SV_kickClient(int clientID);
 void SV_closeServer(networkStatus_t *status);
 
-void SV_sendMessage(int targetID, string message);
+void SV_sendMessage(int targetID, bytestream message);
 void SV_update(networkUpdate_t *update);

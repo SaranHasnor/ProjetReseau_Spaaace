@@ -1,3 +1,6 @@
+#ifndef SPAAACE_DATA_IMPORTED
+#define SPAAACE_DATA_IMPORTED
+
 #include "Player.h"
 #include "projectile.h"
 #include <utils_list.h>
@@ -13,3 +16,5 @@ void updateGame(float deltaTime);
 
 
 SpacePlayer_t *GetPlayerWithId(int playerId);
+
+#endif

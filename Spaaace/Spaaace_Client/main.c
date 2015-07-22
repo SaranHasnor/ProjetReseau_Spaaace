@@ -196,7 +196,7 @@ void renderFunc(void)
 
 	drawStars();
 
-    for (int i = 0; i < game.players.size; i++)
+    for (uint i = 0; i < game.players.size; i++)
     {
         RenderPlayer(game.players.content[i],viewMatrix);
     }

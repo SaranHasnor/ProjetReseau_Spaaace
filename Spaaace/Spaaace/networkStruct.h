@@ -12,3 +12,6 @@ typedef struct {
 
 void initNetworkStructWithPlayer(networkStruct_t *netStruct, SpacePlayer_t *player);
 void initNetworkStructWithPlayerInput(networkStruct_t *netStruct, PlayerInput_t input);
+
+void serializeNetworkStruct(networkStruct_t *netStruct, bytestream *stream);
+void deserializeNetworkStruct(bytestream *stream, networkStruct_t *netStruct);

@@ -6,7 +6,7 @@ ServerPlayer_t* CreateNewPlayer(int senderId)
 
 	InitPlayer(&serverPlayer->BasePlayer);
 
-	serverPlayer->NetworkId = senderId;
+	serverPlayer->BasePlayer.Id = senderId;
 
 	return serverPlayer;
 }

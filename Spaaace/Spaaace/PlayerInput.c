@@ -3,7 +3,6 @@
 
 void PlayerInput_Serialize(PlayerInput_t playerInput, bytestream* stream)
 {
-    bytestream_init(stream, sizeof(PlayerInput_t));
     bytestream_write(stream, (byte*)&playerInput, sizeof(PlayerInput_t));
 }
 

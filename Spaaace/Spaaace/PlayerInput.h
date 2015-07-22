@@ -14,5 +14,6 @@ typedef struct{
 }PlayerInput_t;
 
 void PlayerInput_Serialize(PlayerInput_t playerInput, bytestream* stream);
+void PlayerInput_Deserialize(bytestream stream, PlayerInput_t* playerInput);
 
 #endif

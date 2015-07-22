@@ -4,6 +4,7 @@
 #include <network_server.h>
 #include <string.h>
 #include "PlayerServer.h"
+#include "networkStruct.h"
 
 void MessageListener(networkUpdate_t update)
 {
@@ -22,12 +23,27 @@ void MessageListener(networkUpdate_t update)
 
 			for (uint i = 0; i < game.players.size - 1; i++)
 			{ // Sync their player data with the new one
-				//SV_sendMessage(update.messages[i].senderID, 
+				networkStruct_t net;
+				bytestream stream;
+				initNetworkStructWithPlayer(&net, game.players.content[i]);
+				serializeNetworkStruct(&net, &stream);
+				SV_sendMessage(update.messages[i].senderID, stream);
 			}
 		}
 		else if (update.messages[i].type == NETWORK_MESSAGE_CUSTOM)
 		{ // Update
-			//ChangePlayerPosition(update.messages[i].senderID, messageContent);
+			networkStruct_t net;
+			SpacePlayer_t *player = GetPlayerWithId(i);
+			deserializeNetworkStruct(&update.messages[i].content, &net);
+
+			if (net.inputOnly)
+			{
+				player->input = net.content.input;
+			}
+			else
+			{
+				*player = net.content.player;
+			}
 		}
     }
 }
