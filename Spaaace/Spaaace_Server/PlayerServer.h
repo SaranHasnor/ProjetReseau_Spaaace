@@ -7,6 +7,11 @@
 #include <utils_list.h>
 #include <network_server.h>
 
+typedef struct {
+    int NetworkId;
+    SpacePlayer_t *BasePlayer;
+} ServerPlayer_t;
+
 list_t ClientPlayerList;
 
 void PlayerServer_init();
