@@ -15,7 +15,7 @@ void MessageListener(networkUpdate_t update)
 
 		if (update.messages[i].type == NETWORK_MESSAGE_CONNECT)
 		{
-			ServerPlayer_t *player = CreateNewPlayer(update.messages[i].senderID);
+            ServerPlayer_t *player = CreateNewPlayer(i);//update.messages[i].senderID);
 			list_add(&game.players, player);
 			
 			bytestream_init(&player->connectionData, update.messages[i].content.len);

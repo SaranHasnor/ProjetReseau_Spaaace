@@ -191,7 +191,15 @@ void MessageListener(networkUpdate_t update)
         { // Update
 			networkStruct_t net;
 			SpacePlayer_t *player = GetPlayerWithId(i);
-			deserializeNetworkStruct(&update.messages[i].content, &net);
+
+            if (!player)
+            {
+                player = CreateNewPlayer();
+                player->Id = i;
+                list_add(&game.players, player);
+            }
+
+            deserializeNetworkStruct(&update.messages[i].content, &net);
 
 			if (net.inputOnly)
 			{
@@ -213,8 +221,9 @@ void MessageListener(networkUpdate_t update)
 
 void updateFunc(timeStruct_t time, inputStruct_t input)
 {
-    bytestream 
+    networkStruct_t netStruct;
     networkUpdate_t update;
+    bytestream stream;
 
 	if (time.deltaTime == time.currentTime)
 	{
@@ -232,6 +241,13 @@ void updateFunc(timeStruct_t time, inputStruct_t input)
         if (update.count > 0)
         {
             MessageListener(update);
+        }
+        if (myPlayer != NULL)
+        {
+            initNetworkStructWithPlayer(&netStruct, myPlayer);
+            serializeNetworkStruct(&netStruct, &stream);
+
+            CL_sendMessage(-1, stream);
         }
     }
 }

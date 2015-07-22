@@ -48,6 +48,19 @@ void updateGame(float deltaTime)
 	}
 }
 
+SpacePlayer_t *GetPlayerWithNetworkId(int playerId)
+{
+    for (uint i = 0; i < game.players.size; i++)
+    {
+        SpacePlayer_t *player = (SpacePlayer_t*)game.players.content[i];
+        if (player->Id == playerId)
+        {
+            return player;
+        }
+    }
+    return NULL;
+}
+
 SpacePlayer_t *GetPlayerWithId(int playerId)
 {
 	for (uint i = 0; i < game.players.size; i++)
