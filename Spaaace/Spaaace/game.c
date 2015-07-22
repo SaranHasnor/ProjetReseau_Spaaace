@@ -17,14 +17,14 @@ void updateGame(float deltaTime)
 
 		UpdatePlayer(player, deltaTime);
 
-        if (player->input.AttackButton)
-        {
-            float forward[3];
-            projectile_t *proj = newProjectile(player->Id, 5.0f);
-            AngleVectors(player->Angles, forward, NULL, NULL);
-            vectorScale(proj->vel, 1, forward);
-            vectorCopy(proj->pos, player->Position);
-        }
+		if (player->input.AttackButton)
+		{
+			float forward[3];
+			projectile_t *proj = newProjectile(player->Id, 5.0f);
+			AngleVectors(player->Angles, forward, NULL, NULL);
+			vectorScale(proj->vel, 1, forward);
+			vectorCopy(proj->pos, player->Position);
+		}
 	}
 
 	for (i = 0; i < game.projectiles.size; i++)
@@ -45,4 +45,17 @@ void updateGame(float deltaTime)
 			}
 		}
 	}
+}
+
+SpacePlayer_t *GetPlayerWithId(int playerId)
+{
+	for (uint i = 0; i < game.players.size; i++)
+	{
+		SpacePlayer_t *player = (SpacePlayer_t*)game.players.content[i];
+		if (player->Id == playerId)
+		{
+			return player;
+		}
+	}
+	return NULL;
 }

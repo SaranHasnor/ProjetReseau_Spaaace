@@ -10,3 +10,6 @@ typedef struct {
 extern gamedata_t game;
 
 void updateGame(float deltaTime);
+
+
+SpacePlayer_t *GetPlayerWithId(int playerId);

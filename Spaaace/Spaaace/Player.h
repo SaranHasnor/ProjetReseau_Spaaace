@@ -19,7 +19,7 @@ typedef struct {
 	PlayerInput_t input;
 } SpacePlayer_t;
 
-SpacePlayer_t *CreatePlayer(float Position[3], int kill, int death);
+void InitPlayer(SpacePlayer_t *player);
 void SetPlayerPosition(SpacePlayer_t* player, float position[3]);
 bool PlayerTakeDamage(SpacePlayer_t* Player, float AttackValue);
 void UpdatePlayer(SpacePlayer_t* Player, float deltaTime);

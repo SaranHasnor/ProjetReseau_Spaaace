@@ -11,20 +11,15 @@ void ChangeMaxLife(float maxLife)
     MaxLife = maxLife;
 }
 
-SpacePlayer_t *CreatePlayer(float Position[3], int kill, int death)
+void InitPlayer(SpacePlayer_t *player)
 {
-    SpacePlayer_t *newPlayer = (SpacePlayer_t*)mem_alloc(sizeof(SpacePlayer_t));
-
-    newPlayer->Id = currentId;
-	vectorCopy(newPlayer->Position, Position);
-	vectorCopy(newPlayer->Velocity, nullVec);
-	vectorCopy(newPlayer->Angles, nullVec);
-    newPlayer->Life = MaxLife;
-    newPlayer->Kill = 0;
-    newPlayer->Death = 0;
-
-    currentId++;
-	return newPlayer;
+	player->Id = currentId++;
+	vectorCopy(player->Position, nullVec);
+	vectorCopy(player->Velocity, nullVec);
+	vectorCopy(player->Angles, nullVec);
+	player->Life = MaxLife;
+	player->Kill = 0;
+	player->Death = 0;
 }
 
 void SetPlayerPosition(SpacePlayer_t* Player, float Position[3])

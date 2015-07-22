@@ -8,15 +8,12 @@
 #include <network_server.h>
 
 typedef struct {
+	SpacePlayer_t BasePlayer;
+
     int NetworkId;
-    SpacePlayer_t *BasePlayer;
 } ServerPlayer_t;
 
-list_t ClientPlayerList;
-
-void PlayerServer_init();
-void CreateNewPlayer(int senderId);
-void ChangePlayerPosition(int senderId,string message);
+ServerPlayer_t *CreateNewPlayer(int senderId);
 
 #endif
 
