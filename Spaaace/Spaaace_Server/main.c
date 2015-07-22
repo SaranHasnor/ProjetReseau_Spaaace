@@ -3,6 +3,7 @@
 #include <game.h>
 #include <network_server.h>
 #include <string.h>
+#include <Windows.h>
 #include "PlayerServer.h"
 #include "networkStruct.h"
 
@@ -71,6 +72,8 @@ int main(int argc, char **argv)
         {
            MessageListener(update);
         }
+
+		Sleep(10);
     }
 
     SV_closeServer(&status);

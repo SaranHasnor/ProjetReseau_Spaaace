@@ -54,6 +54,11 @@ void updateCamera(inputStruct_t input)
 	float velocity[3] = {0,0,0};
     float cameraAngle[3];
 
+	if (!myPlayer)
+	{
+		return;
+	}
+
 	if (input.mouseButtons & INPUT_MOUSELEFT)
 	{
 		float angle[3];
@@ -176,7 +181,7 @@ void MessageListener(networkUpdate_t update)
 			SpacePlayer_t *player = CreateNewPlayer();
 			list_add(&game.players, player);
 
-			if (myRandomString && !strcmp(myRandomString, update.messages[i].content.data))
+			if (!myPlayer && myRandomString && !strcmp(myRandomString, update.messages[i].content.data))
 			{ // That's me!
 				myPlayer = player;
 			}
