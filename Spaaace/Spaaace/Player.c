@@ -62,7 +62,7 @@ void UpdatePlayer(SpacePlayer_t* Player, float deltaTime)
         velocity[2] -= 1;
     }
 
-    vectorCopy(&Player->Velocity, velocity);
+    vectorCopy(Player->Velocity, velocity);
 
 	vectorMA(Player->Position, Player->Position, deltaTime, Player->Velocity);
 }
