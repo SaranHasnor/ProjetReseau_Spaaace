@@ -28,7 +28,7 @@ void updateGame(float deltaTime)
 		{
 			SpacePlayer_t *player = game.players.content[j];
 
-			if (projectileDistanceToPoint(proj, player->Position) < _playerHitboxSize)
+			if (player->Id != proj->ownerID && projectileDistanceToPoint(proj, player->Position) < _playerHitboxSize)
 			{
 				PlayerTakeDamage(player, proj->damage);
 				list_removeAt(&game.projectiles, i--);
