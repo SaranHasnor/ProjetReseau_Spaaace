@@ -116,33 +116,17 @@ void initEngine()
 
 void MessageListener(networkUpdate_t update)
 {
-
-    string strMessageByte;
-    string strMessage;
-    string headerMessage;
-    string messageContent;
-
-    string_initStr(&strMessage, "");
-    string_initStr(&headerMessage, "");
-    string_initStr(&messageContent, "");
-
     for (uint i = 0; i < update.count; i++)
     {
         printMessage(update.messages[i]);
-        char buffer[128]; // taille max du message
-        bytestream_read(&update.messages[i].content, buffer, update.messages[i].content.len);
-        string_initStr(&strMessageByte, buffer);
-        str_substring(strMessageByte, '!', &strMessage);
-        str_substring(strMessage, ':', &headerMessage);
-        if (strcmp(headerMessage.s , "New Player") == 0)
+        
+        if (update.messages[i].type == NETWORK_MESSAGE_CONNECT)
         {
-            str_substringIndex(strMessage, headerMessage.len + 1, strMessage.len, &messageContent);
-            CreateNewPlayerStringMessage(messageContent);
+            CreateNewPlayerStringMessage();
         }
-        else if (strcmp(headerMessage.s, "PlayerPosition") == 0)
-        {
-            str_substringIndex(strMessage, headerMessage.len + 1, strMessage.len, &messageContent);
-            MovePlayerMessage(messageContent);
+		else if (update.messages[i].type == NETWORK_MESSAGE_CUSTOM)
+        { // Update
+            //MovePlayerMessage(messageContent);
         }
     }
 }

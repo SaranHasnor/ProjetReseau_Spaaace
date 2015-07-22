@@ -5,6 +5,8 @@
 
 #include <utils.h>
 
+#include "PlayerInput.h"
+
 typedef struct {
     int Id;
     float Position[3];
@@ -13,6 +15,8 @@ typedef struct {
     float Life;
     int Death;
     int Kill;
+
+	PlayerInput_t input;
 } SpacePlayer_t;
 
 SpacePlayer_t *CreatePlayer(float Position[3], int kill, int death);

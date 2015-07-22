@@ -7,33 +7,18 @@
 
 void MessageListener(networkUpdate_t update)
 {
-
-    string strMessageByte;
-    string strMessage;
-    string headerMessage;
-    string messageContent;
-
-    string_initStr(&strMessage, "");
-    string_initStr(&headerMessage, "");
-    string_initStr(&messageContent, "");
-
     for (uint i = 0; i < update.count; i++)
     {
         printMessage(update.messages[i]);
 
-        char buffer[128]; // taille max du message
-        bytestream_read(&update.messages[i].content, buffer, update.messages[i].content.len);
-        string_initStr(&strMessageByte, buffer);
-        str_substring(strMessageByte, '!', &strMessage);
-        str_substring(strMessage, ':', &headerMessage);
-        if (strcmp(headerMessage.s, "Player Connect") == 0)
-        {
-            CreateNewPlayer(update.messages[i].senderID);
-        }
-        else if (strcmp(headerMessage.s, "PlayerPosition") == 0){
-            str_substringIndex(strMessage, headerMessage.len + 1, strMessage.len, &messageContent);
-            ChangePlayerPosition(update.messages[i].senderID, messageContent);
-        }
+		if (update.messages[i].type == NETWORK_MESSAGE_CONNECT)
+		{
+			CreateNewPlayer(update.messages[i].senderID);
+		}
+		else if (update.messages[i].type == NETWORK_MESSAGE_CUSTOM)
+		{ // Update
+			//ChangePlayerPosition(update.messages[i].senderID, messageContent);
+		}
     }
 }
 
@@ -43,7 +28,8 @@ int main(int argc, char **argv)
     networkStatus_t status;
 
     setupNetwork();
-    SV_initServer(2, 4657, SOCKET_PROTOCOL_TCP, &status);
+    SV_initServer(32, 4657, SOCKET_PROTOCOL_TCP, &status);
+
     if (status.error != NETWORK_ERROR_NONE)
         printError(status);
 
@@ -54,7 +40,7 @@ int main(int argc, char **argv)
         if (update.count > 0)
         {
            MessageListener(update);
-        }   
+        }
     }
 
     SV_closeServer(&status);
