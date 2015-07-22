@@ -37,3 +37,15 @@ void UpdatePlayer(SpacePlayer_t* Player, float deltaTime)
 {
 	vectorMA(Player->Position, Player->Position, deltaTime, Player->Velocity);
 }
+
+void Player_Serialize(SpacePlayer_t player, bytestream* stream)
+{
+    bytestream_write(stream, (byte*)&player, sizeof(SpacePlayer_t));
+}
+
+SpacePlayer_t* Player_Deserialize(bytestream stream)
+{
+    SpacePlayer_t *player=(SpacePlayer_t*)mem_alloc(sizeof(SpacePlayer_t));
+    bytestream_read(&stream, (byte*)player, sizeof(SpacePlayer_t));
+    return player;
+}

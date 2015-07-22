@@ -13,7 +13,7 @@ typedef struct {
     mesh_t* PlayerMesh;
 } ClientPlayer_t;
 
-
+ClientPlayer_t* myPlayer;
 
 void PlayerClient_init();
 void RenderClient(float viewMatrix[16]);
