@@ -6,7 +6,7 @@
 #include "Player.h"
 #include <engine_render.h>
 
-typedef enum { UpButton, DownButton, LeftButton, RightButton, UpperButton, DownerButton } InputValue;
+typedef enum { UpButton, DownButton, LeftButton, RightButton, UpperButton, DownerButton, AttackButton } InputValue;
 
 SpacePlayer_t* myPlayer;
 

@@ -68,5 +68,8 @@ void ChangeMyPlayerInput(InputValue value, bool buttonState)
         case DownerButton:
             myPlayer->input.DownerButton = buttonState;
             break;
+        case AttackButton:
+            myPlayer->input.AttackButton = buttonState;
+            break;
     }
 }

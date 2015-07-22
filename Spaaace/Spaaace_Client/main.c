@@ -39,12 +39,14 @@ void keyUpFunc(uchar key)
 
 void mouseDownFunc(ushort button, int x, int y)
 {
-
+    if (button == INPUT_MOUSELEFT_BUTTON)
+        ChangeMyPlayerInput(AttackButton, true);
 }
 
 void mouseUpFunc(ushort button, int x, int y)
 {
-
+    if (button == INPUT_MOUSELEFT_BUTTON)
+        ChangeMyPlayerInput(AttackButton, false);
 }
 
 
