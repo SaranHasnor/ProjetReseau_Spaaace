@@ -18,6 +18,7 @@
 #include <string.h>
 
 #define NB_STARS 1024
+#define RANGE_STARS 50.0f
 
 float _stars[NB_STARS][3];
 
@@ -118,7 +119,7 @@ void initEngine()
 
 	for (i = 0; i < NB_STARS; i++)
 	{
-		vectorSet(_stars[i], randomValueBetween(-1.0f, 1.0f), randomValueBetween(-1.0f, 1.0f), randomValueBetween(-1.0f, 1.0f));
+        vectorSet(_stars[i], randomValueBetween(-RANGE_STARS, RANGE_STARS), randomValueBetween(-RANGE_STARS, RANGE_STARS), randomValueBetween(-RANGE_STARS, RANGE_STARS));
 		vectorNormalize(_stars[i]);
 		vectorScale(_stars[i], 100.0f, _stars[i]);
 	}
