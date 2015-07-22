@@ -13,8 +13,9 @@ typedef struct {
     mesh_t* PlayerMesh;
 } ClientPlayer_t;
 
+ClientPlayer_t* myPlayer;
+
 list_t ClientPlayerList;
-int MyPlayerId;
 
 void PlayerClient_init();
 void RenderClient(float viewMatrix[16]);
