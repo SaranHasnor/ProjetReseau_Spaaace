@@ -11,7 +11,7 @@ void ChangeMaxLife(float maxLife)
     MaxLife = maxLife;
 }
 
-void CreatePlayer(float Position[3], int kill, int death )
+void CreatePlayer(float Position[3], int kill, int death, SpacePlayer_t* outSpacePlayer)
 {
     SpacePlayer_t newPlayer;
 
@@ -23,6 +23,8 @@ void CreatePlayer(float Position[3], int kill, int death )
     newPlayer.Life = MaxLife;
     newPlayer.Kill = 0;
     newPlayer.Death = 0;
+
+    outSpacePlayer = &newPlayer;
 
     currentId++;
 }
