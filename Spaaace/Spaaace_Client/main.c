@@ -200,22 +200,25 @@ void MessageListener(networkUpdate_t update)
 			networkStruct_t net;
 			SpacePlayer_t *player = GetPlayerWithId(update.messages[i].senderID);
 
-            if (!player)
-            {
-				player = CreateNewPlayer(update.messages[i].senderID);
-                player->Id = i;
-                list_add(&game.players, player);
-            }
-
-            deserializeNetworkStruct(&update.messages[i].content, &net);
-
-			if (net.inputOnly)
+			if (player != myPlayer)
 			{
-				player->input = net.content.input;
-			}
-			else
-			{
-				*player = net.content.player;
+				if (!player)
+				{
+					player = CreateNewPlayer(update.messages[i].senderID);
+					player->Id = i;
+					list_add(&game.players, player);
+				}
+
+				deserializeNetworkStruct(&update.messages[i].content, &net);
+
+				if (net.inputOnly)
+				{
+					player->input = net.content.input;
+				}
+				else
+				{
+					*player = net.content.player;
+				}
 			}
         }
 		else if (update.messages[i].type == NETWORK_MESSAGE_EXIT)
