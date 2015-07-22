@@ -113,6 +113,11 @@ void mem_free(void *mem)
 	mem_t *mem2 = alloc;
 	mem_t *prev = NULL;
 
+	if (!mem)
+	{
+		return;
+	}
+
 	while (mem2)
 	{
 		if (mem2->address == mem)
