@@ -8,6 +8,8 @@
 #include "PlayerInput.h"
 
 typedef struct {
+	PlayerInput_t input;
+
     int Id;
     float Position[3];
     float Velocity[3];
@@ -15,8 +17,6 @@ typedef struct {
     float Life;
     int Death;
     int Kill;
-
-	PlayerInput_t input;
 } SpacePlayer_t;
 
 void InitPlayer(SpacePlayer_t *player);

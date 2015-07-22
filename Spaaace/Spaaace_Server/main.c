@@ -13,7 +13,17 @@ void MessageListener(networkUpdate_t update)
 
 		if (update.messages[i].type == NETWORK_MESSAGE_CONNECT)
 		{
-			CreateNewPlayer(update.messages[i].senderID);
+			ServerPlayer_t *player = CreateNewPlayer(update.messages[i].senderID);
+			list_add(&game.players, player);
+			
+			bytestream_init(&player->connectionData, update.messages[i].content.len);
+			bytestream_write(&player->connectionData, update.messages[i].content.data, update.messages[i].content.len);
+			player->connectionData.cursor = 0;
+
+			for (uint i = 0; i < game.players.size - 1; i++)
+			{ // Sync their player data with the new one
+				//SV_sendMessage(update.messages[i].senderID, 
+			}
 		}
 		else if (update.messages[i].type == NETWORK_MESSAGE_CUSTOM)
 		{ // Update

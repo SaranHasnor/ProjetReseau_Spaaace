@@ -11,7 +11,7 @@
 typedef struct {
 	SpacePlayer_t BasePlayer;
 
-    int NetworkId;
+	bytestream connectionData;
 } ServerPlayer_t;
 
 ServerPlayer_t *CreateNewPlayer(int senderId);
