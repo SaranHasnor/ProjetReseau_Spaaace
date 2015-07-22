@@ -51,19 +51,17 @@ void CreateNewPlayer(int senderId)
     SV_sendMessage(-1, message);
 }
 
-void GetPlayerWithId(int playerId, ServerPlayer_t* outSpacePlayer)
+ServerPlayer_t *GetPlayerWithId(int playerId)
 {
-    ServerPlayer_t *player = (ServerPlayer_t*)mem_alloc(sizeof(ServerPlayer_t));
-    outSpacePlayer = NULL;
-    for (int i = 0; i < ClientPlayerList.size; i++)
+    for (uint i = 0; i < ClientPlayerList.size; i++)
     {
-        player = ((ServerPlayer_t*)(ClientPlayerList.content[i]));
+        ServerPlayer_t *player = (ServerPlayer_t*)ClientPlayerList.content[i];
         if (player->NetworkId == playerId)
         {
-            outSpacePlayer = player;
-            break;
+            return player;
         }
     }
+    return NULL;
 }
 
 void ExtractPosition(string str_position, float position[3])
@@ -104,7 +102,7 @@ void ChangePlayerPosition(int senderId, string message)
 
     GetPlayerWithId(senderId, &spacePlayer);
 
-    SetPlayerPosition(&spacePlayer, position);
+    SetPlayerPosition(&spacePlayer.BasePlayer, position);
 
     string_initStr(&sendMessage, "PlayerPosition:");
     string_appendStr(&sendMessage, strFromFloat(position[0]));

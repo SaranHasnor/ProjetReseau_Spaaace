@@ -22,7 +22,7 @@ void CreateNewPlayerStringMessage(string message);
 void CreateNewPlayer(float position[3], int kill, int death);
 void MovePlayer(float position[3], int PlayerId);
 void MovePlayerMessage(string message);
-void PlayerWantToMoveTo(float position[3], int PlayerId);
+void PlayerWantToMove(float position[3]);
 
 
 #endif
