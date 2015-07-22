@@ -120,13 +120,8 @@ void updateCamera(inputStruct_t input)
         ChangeMyPlayerInput(DownerButton, false);
     }
 
-    //engine_setCameraPosition(playerPosition);
 	engine_setCameraVelocity(velocity);
     engine_getCameraPosition(cameraPosition);
-
-    //testMesh->origin[0] = playerPosition[0];
-    //testMesh->origin[1] = playerPosition[1];
-    //testMesh->origin[2] = playerPosition[2];
 }
 
 char* myRandomString = NULL;
@@ -215,12 +210,10 @@ void updateFunc(timeStruct_t time, inputStruct_t input)
 		time_sync(time.currentTime);
 	}
 
+    updateCamera(input);
 
     updateGame(time.deltaTimeSeconds);
-	//testMesh->origin[2] += 0.1f * time.deltaTimeSeconds;
-	//mat_rotation(testMesh->rotation, 20.0f * testMesh->origin[2], 50.0f * testMesh->origin[2], 0.0f);
 
-	updateCamera(input);
     if (CL_connected())
     {
         CL_update(&update);
