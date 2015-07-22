@@ -141,6 +141,8 @@ void updateFunc(timeStruct_t time, inputStruct_t input)
 		time_sync(time.currentTime);
 	}
 
+
+    updateGame(time.deltaTimeSeconds);
 	//testMesh->origin[2] += 0.1f * time.deltaTimeSeconds;
 	//mat_rotation(testMesh->rotation, 20.0f * testMesh->origin[2], 50.0f * testMesh->origin[2], 0.0f);
 
