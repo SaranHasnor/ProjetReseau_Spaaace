@@ -8,14 +8,16 @@
 typedef struct {
     int Id;
     float Position[3];
-    float Speed;
+    float Velocity[3];
+	float Angles[3];
     float Life;
     int Death;
     int Kill;
 } SpacePlayer_t;
 
-void CreatePlayer(float Position[3], int kill, int death, SpacePlayer_t* outSpacePlayer);
+SpacePlayer_t *CreatePlayer(float Position[3], int kill, int death);
 void SetPlayerPosition(SpacePlayer_t* player, float position[3]);
-void PlayerTakeDamage(SpacePlayer_t* Player, float AttackValue, bool *outIsInLife);
+bool PlayerTakeDamage(SpacePlayer_t* Player, float AttackValue);
+void UpdatePlayer(SpacePlayer_t* Player, float deltaTime);
 
 #endif

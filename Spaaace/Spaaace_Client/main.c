@@ -6,6 +6,7 @@
 #include <utils_matrix.h>
 #include <game.h>
 #include "PlayerClient.h"
+#include <utils_time.h>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -85,7 +86,7 @@ void updateCamera(inputStruct_t input)
 
     //engine_setCameraPosition(playerPosition);
 	engine_setCameraVelocity(velocity);
-    engine_getCameraPosition(&cameraPosition);
+    engine_getCameraPosition(cameraPosition);
     PlayerWantToMove(cameraPosition);
 
     //testMesh->origin[0] = playerPosition[0];
@@ -111,7 +112,7 @@ void MessageListener(networkUpdate_t update)
     string_initStr(&headerMessage, "");
     string_initStr(&messageContent, "");
 
-    for (int i = 0; i < update.count; i++)
+    for (uint i = 0; i < update.count; i++)
     {
         printMessage(update.messages[i]);
         char buffer[128]; // taille max du message
@@ -139,6 +140,7 @@ void updateFunc(timeStruct_t time, inputStruct_t input)
 	if (time.deltaTime == time.currentTime)
 	{
 		initEngine();
+		time_sync(time.currentTime);
 	}
 
 	//testMesh->origin[2] += 0.1f * time.deltaTimeSeconds;

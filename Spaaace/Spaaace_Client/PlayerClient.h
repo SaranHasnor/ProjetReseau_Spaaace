@@ -9,7 +9,7 @@
 #include <network_client.h>
 
 typedef struct {
-    SpacePlayer_t Player;
+    SpacePlayer_t *BasePlayer;
     mesh_t* PlayerMesh;
 } ClientPlayer_t;
 

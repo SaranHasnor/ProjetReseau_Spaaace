@@ -51,7 +51,7 @@ void string_appendStr(string *str, char *value)
 
 int str_indexof(string str, char chr)
 {
-    int i = 0;
+    uint i = 0;
     while (str.s[i] != chr && i < str.len+1)
     {
         i++;

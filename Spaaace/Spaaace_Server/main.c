@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <game.h>
 #include <network_server.h>
+#include <string.h>
+#include "PlayerServer.h"
 
 void MessageListener(networkUpdate_t update)
 {
@@ -15,7 +17,7 @@ void MessageListener(networkUpdate_t update)
     string_initStr(&headerMessage, "");
     string_initStr(&messageContent, "");
 
-    for (int i = 0; i < update.count; i++)
+    for (uint i = 0; i < update.count; i++)
     {
         printMessage(update.messages[i]);
 
@@ -33,8 +35,6 @@ void MessageListener(networkUpdate_t update)
 
 int main(int argc, char **argv)
 {
-	//printf(":D\n");
-    char* message;
     networkUpdate_t update;
     networkStatus_t status;
 

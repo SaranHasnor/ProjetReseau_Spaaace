@@ -1,8 +1,8 @@
 #include "Player.h"
 
-float Speed = 1.0f;
+#include <utils_vector.h>
+
 float MaxLife = 100;
-unsigned int _MaxPlayer = 2;
 
 int currentId = 0;
 
@@ -11,33 +11,34 @@ void ChangeMaxLife(float maxLife)
     MaxLife = maxLife;
 }
 
-void CreatePlayer(float Position[3], int kill, int death, SpacePlayer_t* outSpacePlayer)
+SpacePlayer_t *CreatePlayer(float Position[3], int kill, int death)
 {
-    SpacePlayer_t newPlayer;
+    SpacePlayer_t *newPlayer = (SpacePlayer_t*)mem_alloc(sizeof(SpacePlayer_t));
 
-    newPlayer.Id = currentId;
-    newPlayer.Position[0] = Position[0];
-    newPlayer.Position[1] = Position[1];
-    newPlayer.Position[2] = Position[2];
-    newPlayer.Speed = Speed;
-    newPlayer.Life = MaxLife;
-    newPlayer.Kill = 0;
-    newPlayer.Death = 0;
-
-    outSpacePlayer = &newPlayer;
+    newPlayer->Id = currentId;
+	vectorCopy(newPlayer->Position, Position);
+	vectorCopy(newPlayer->Velocity, nullVec);
+	vectorCopy(newPlayer->Angles, nullVec);
+    newPlayer->Life = MaxLife;
+    newPlayer->Kill = 0;
+    newPlayer->Death = 0;
 
     currentId++;
+	return newPlayer;
 }
 
 void SetPlayerPosition(SpacePlayer_t* Player, float Position[3])
 {
-    Player->Position[0] = Position[0];
-    Player->Position[1] = Position[1];
-    Player->Position[2] = Position[2];
+	vectorCopy(Player->Position, Position);
 }
 
-void PlayerTakeDamage(SpacePlayer_t* Player, float AttackValue, bool* outIsInLife)
-{
+bool PlayerTakeDamage(SpacePlayer_t* Player, float AttackValue)
+{ // Returns true if the player is still alive
     Player->Life -= AttackValue;
-    outIsInLife = Player->Life < 1;
+    return Player->Life < 1;
+}
+
+void UpdatePlayer(SpacePlayer_t* Player, float deltaTime)
+{
+	vectorMA(Player->Position, Player->Position, deltaTime, Player->Velocity);
 }

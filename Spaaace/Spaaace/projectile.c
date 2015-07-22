@@ -4,10 +4,12 @@
 #include <utils_vector.h>
 
 
-projectile_t *newProjectile()
+projectile_t *newProjectile(int ownerID, float damage)
 {
 	projectile_t *proj = (projectile_t*)mem_alloc(sizeof(projectile_t));
 	mem_set(proj, 0, sizeof(projectile_t));
+	proj->ownerID = ownerID;
+	proj->damage = damage;
 	return proj;
 }
 

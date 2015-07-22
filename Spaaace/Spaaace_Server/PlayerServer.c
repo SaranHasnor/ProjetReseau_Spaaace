@@ -10,10 +10,10 @@ void CreateNewPlayer(int senderId)
     float defaultposition[3] = { 0, 0, 0 };
     string message;
     bytestream stream;
-    SpacePlayer_t newPlayer;
+    SpacePlayer_t *newPlayer;
     SpacePlayer_t* tmpPlayer;
 
-    for (int i = 0; i < ClientPlayerList.size; i++)
+    for (uint i = 0; i < ClientPlayerList.size; i++)
     {
         tmpPlayer = (SpacePlayer_t*)ClientPlayerList.content[i];
 
@@ -42,9 +42,9 @@ void CreateNewPlayer(int senderId)
     bytestream_init(&stream, message.len);
     bytestream_write(&stream, message.s, message.len);
 
-    CreatePlayer(defaultposition, 0, 0, &newPlayer);
+    newPlayer = CreatePlayer(defaultposition, 0, 0);
 
-    list_add(&ClientPlayerList, &newPlayer);
+    list_add(&ClientPlayerList, newPlayer);
 
     SV_sendMessage(-1, message);
 }

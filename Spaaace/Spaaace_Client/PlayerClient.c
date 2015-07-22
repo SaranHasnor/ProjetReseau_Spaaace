@@ -21,7 +21,7 @@ void PlayerClient_init()
 void RenderClient(float viewMatrix[16])
 {
     ClientPlayer_t* player;
-    for (int i = 0; i < ClientPlayerList.size; i++)
+    for (uint i = 0; i < ClientPlayerList.size; i++)
     {
         player = ((ClientPlayer_t*)ClientPlayerList.content[i]);
         //renderMesh(player->PlayerMesh, viewMatrix);
@@ -103,24 +103,22 @@ void CreateNewPlayer(float position[3], int kill, int death)
 
     vectorCopy(newPlayer->PlayerMesh->origin, position);
 
-    CreatePlayer(position, kill, death, &newPlayer->Player);
+    newPlayer->BasePlayer = CreatePlayer(position, kill, death);
 
     list_add(&ClientPlayerList, &newPlayer);
 }
 
-void GetPlayerWithId(int playerId, ClientPlayer_t* outSpacePlayer)
+ClientPlayer_t *GetPlayerWithId(int playerId)
 {
-    ClientPlayer_t *player = (ClientPlayer_t*)mem_alloc(sizeof(ClientPlayer_t));
-    outSpacePlayer = NULL;
-    for (int i = 0; i < ClientPlayerList.size; i++)
+    for (uint i = 0; i < ClientPlayerList.size; i++)
     {
-        player = ((ClientPlayer_t*)(ClientPlayerList.content[i]));
-        if (player->Player.Id == playerId)
+		ClientPlayer_t *player = (ClientPlayer_t*)ClientPlayerList.content[i];
+        if (player->BasePlayer->Id == playerId)
         {
-            outSpacePlayer = player;
-            break;
+			return player;
         }
     }
+	return NULL;
 }
 
 void PlayerWantToMove(float position[3])
@@ -150,11 +148,10 @@ void PlayerWantToMove(float position[3])
 
 void MovePlayer(float position[3], int PlayerId)
 {
-    ClientPlayer_t player;
-    GetPlayerWithId(PlayerId, &player);
-    if (&player != NULL)
+	ClientPlayer_t *player = GetPlayerWithId(PlayerId); 
+	if (player != NULL)
     {
-        SetPlayerPosition(&player.Player, position);
+		SetPlayerPosition(player->BasePlayer, position);
         //erreur sur l'attribution du mesh
         //vectorCopy(player.PlayerMesh->origin,position);
     }
