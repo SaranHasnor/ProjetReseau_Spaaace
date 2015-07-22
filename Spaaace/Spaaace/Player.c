@@ -20,6 +20,7 @@ void InitPlayer(SpacePlayer_t *player)
 	player->Life = MaxLife;
 	player->Kill = 0;
 	player->Death = 0;
+    mem_set(&player->input, 0, sizeof(PlayerInput_t));
 }
 
 void SetPlayerPosition(SpacePlayer_t* Player, float Position[3])
