@@ -12,7 +12,7 @@ SpacePlayer_t* myPlayer;
 
 void CreatePlayerMesh();
 void RenderPlayer(SpacePlayer_t* player, float viewMatrix[16]);
-SpacePlayer_t* CreateNewPlayer();
+SpacePlayer_t* CreateNewPlayer(int id);
 
 void ChangeMyPlayerInput(InputValue value, bool buttonState);
 

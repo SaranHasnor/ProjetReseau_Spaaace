@@ -187,7 +187,7 @@ void MessageListener(networkUpdate_t update)
         
         if (update.messages[i].type == NETWORK_MESSAGE_CONNECT)
         {
-			SpacePlayer_t *player = CreateNewPlayer();
+			SpacePlayer_t *player = CreateNewPlayer(update.messages[i].senderID);
 			list_add(&game.players, player);
 
 			if (!myPlayer && myRandomString && !strcmp(myRandomString, update.messages[i].content.data))
@@ -198,11 +198,11 @@ void MessageListener(networkUpdate_t update)
 		else if (update.messages[i].type == NETWORK_MESSAGE_CUSTOM)
         { // Update
 			networkStruct_t net;
-			SpacePlayer_t *player = GetPlayerWithId(i);
+			SpacePlayer_t *player = GetPlayerWithId(update.messages[i].senderID);
 
             if (!player)
             {
-                player = CreateNewPlayer();
+				player = CreateNewPlayer(update.messages[i].senderID);
                 player->Id = i;
                 list_add(&game.players, player);
             }
@@ -220,7 +220,7 @@ void MessageListener(networkUpdate_t update)
         }
 		else if (update.messages[i].type == NETWORK_MESSAGE_EXIT)
 		{
-			SpacePlayer_t *player = GetPlayerWithId(i);
+			SpacePlayer_t *player = GetPlayerWithId(update.messages[i].senderID);
 			list_remove(&game.players, player);
 			mem_free(player);
 		}

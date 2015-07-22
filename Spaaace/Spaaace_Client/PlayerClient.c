@@ -39,10 +39,10 @@ void RenderPlayer(SpacePlayer_t* player, float viewMatrix[16])
 	renderMesh(playerMesh, viewMatrix);
 }
 
-SpacePlayer_t* CreateNewPlayer()
+SpacePlayer_t* CreateNewPlayer(int id)
 {
     SpacePlayer_t *player = (SpacePlayer_t*)mem_alloc(sizeof(SpacePlayer_t));
-	mem_set(player, 0, sizeof(SpacePlayer_t));
+	InitPlayer(player, id);
     return player;
 }
 

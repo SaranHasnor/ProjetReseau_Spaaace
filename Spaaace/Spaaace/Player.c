@@ -4,16 +4,14 @@
 
 float MaxLife = 100;
 
-int currentId = 0;
-
 void ChangeMaxLife(float maxLife)
 {
     MaxLife = maxLife;
 }
 
-void InitPlayer(SpacePlayer_t *player)
+void InitPlayer(SpacePlayer_t *player, int id)
 {
-	player->Id = currentId++;
+	player->Id = id;
 	vectorCopy(player->Position, nullVec);
 	vectorCopy(player->Velocity, nullVec);
 	vectorCopy(player->Angles, nullVec);
