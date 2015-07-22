@@ -41,3 +41,28 @@ SpacePlayer_t* CreateNewPlayer()
 
     return player;
 }
+
+void ChangeMyPlayerInput(InputValue value, bool buttonState)
+{
+    switch (value)
+    {
+        case UpButton:
+            myPlayer->input.UpButton = buttonState;
+            break;
+        case DownButton:
+            myPlayer->input.DownButton = buttonState;
+            break;
+        case LeftButton:
+            myPlayer->input.LeftButton = buttonState;
+            break;
+        case RightButton:
+            myPlayer->input.RightButton = buttonState;
+            break;
+        case UpperButton:
+            myPlayer->input.UpperButton = buttonState;
+            break;
+        case DownerButton:
+            myPlayer->input.DownerButton = buttonState;
+            break;
+    }
+}
