@@ -137,13 +137,10 @@ void PlayerWantToMove(float position[3])
     string_appendStr(&message, floatToCharTmp.s);
     string_appendStr(&message, ";");
 
-    //my player Id
-    string_appendStr(&message, "0");
-
     //endMessage
     string_appendStr(&message, "!");
 
-    //CL_sendMessage(-1, message);
+    CL_sendMessage(0, message);
 }
 
 void MovePlayer(float position[3], int PlayerId)

@@ -30,6 +30,10 @@ void MessageListener(networkUpdate_t update)
         {
             CreateNewPlayer(update.messages[i].senderID);
         }
+        else if (strcmp(headerMessage.s, "PlayerPosition") == 0){
+            str_substringIndex(strMessage, headerMessage.len + 1, strMessage.len, &messageContent);
+            ChangePlayerPosition(update.messages[i].senderID, messageContent);
+        }
     }
 }
 

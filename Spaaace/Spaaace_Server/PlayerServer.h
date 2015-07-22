@@ -16,6 +16,7 @@ list_t ClientPlayerList;
 
 void PlayerServer_init();
 void CreateNewPlayer(int senderId);
+void ChangePlayerPosition(int senderId,string message);
 
 #endif
 
