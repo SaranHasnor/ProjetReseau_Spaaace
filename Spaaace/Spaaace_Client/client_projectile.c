@@ -50,6 +50,8 @@ void createProjectileMesh()
 	addVertex(0.0f, -1.0f, 0.0f, 0.5f, 0.0f);
 	addVertex(0.25f, 0.0f, 0.25f, 0.0f, 0.5f);
 	addVertex(0.25f, 0.0f, -0.25f, 1.0f, 0.5f);
+
+    updateMeshGeometry(_projMesh);
 }
 
 void drawProjectile(projectile_t *projectile, float viewMatrix[16])

@@ -23,6 +23,8 @@ void CreatePlayerMesh()
     addVertex(-0.5f, 1.0f, -0.25f, 0.0f, 1.0f);
     addVertex(-0.5f, 2.0f, -0.25f, 0.0f, 0.0f);
     addVertex(-0.5f, 1.0f, 0.25f, 1.0f, 0.0f);
+
+    updateMeshGeometry(playerMesh);
 }
 
 void RenderPlayer(SpacePlayer_t* player, float viewMatrix[16])

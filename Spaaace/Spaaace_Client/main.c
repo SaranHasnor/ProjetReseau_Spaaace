@@ -73,6 +73,7 @@ void updateCamera(inputStruct_t input)
 
 	if (input.key_timeHeld('z') > 0)
 	{
+        velocity[1] += 1.0f;
         ChangeMyPlayerInput(UpButton, true);
     }
     else
@@ -82,6 +83,7 @@ void updateCamera(inputStruct_t input)
 
 	if (input.key_timeHeld('s') > 0)
 	{
+        velocity[1] -= 1.0f;
         ChangeMyPlayerInput(DownButton, true);
 	}
     else
@@ -91,6 +93,7 @@ void updateCamera(inputStruct_t input)
 
 	if (input.key_timeHeld('d') > 0)
 	{
+        velocity[0] += 1.0f;
         ChangeMyPlayerInput(RightButton, true);
 	}
     else
@@ -100,6 +103,7 @@ void updateCamera(inputStruct_t input)
 
 	if (input.key_timeHeld('q') > 0)
 	{
+        velocity[0] -= 1.0f;
         ChangeMyPlayerInput(LeftButton, true);
 	}
     else
@@ -109,6 +113,7 @@ void updateCamera(inputStruct_t input)
 
 	if (input.key_timeHeld(' ') > 0)
 	{
+        velocity[2] += 1.0f;
         ChangeMyPlayerInput(UpperButton, true);
 	}
     else
@@ -118,6 +123,7 @@ void updateCamera(inputStruct_t input)
 
 	if (input.key_timeHeld('x') > 0)
 	{
+        velocity[2] -= 1.0f;
         ChangeMyPlayerInput(DownerButton, true);
 	}
     else
@@ -207,6 +213,7 @@ void MessageListener(networkUpdate_t update)
 
 void updateFunc(timeStruct_t time, inputStruct_t input)
 {
+    bytestream 
     networkUpdate_t update;
 
 	if (time.deltaTime == time.currentTime)

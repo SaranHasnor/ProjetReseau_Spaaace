@@ -39,17 +39,22 @@ void UpdatePlayer(SpacePlayer_t* Player, float deltaTime)
     float velocity[3] = { 0, 0, 0 };
     if (Player->input.UpButton)
     {
-        velocity[0] += 1;
+        velocity[1] += 1;
     }
 
     if (Player->input.DownButton)
     {
-        velocity[0] -= 1;
+        velocity[1] -= 1;
+    }
+
+    if (Player->input.RightButton)
+    {
+        velocity[0] += 1;
     }
 
     if (Player->input.LeftButton)
     {
-        velocity[1] -= 1;
+        velocity[0] -= 1;
     }
 
     if (Player->input.UpperButton)
