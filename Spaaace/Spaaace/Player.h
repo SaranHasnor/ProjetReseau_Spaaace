@@ -23,5 +23,7 @@ void InitPlayer(SpacePlayer_t *player);
 void SetPlayerPosition(SpacePlayer_t* player, float position[3]);
 bool PlayerTakeDamage(SpacePlayer_t* Player, float AttackValue);
 void UpdatePlayer(SpacePlayer_t* Player, float deltaTime);
+void Player_Serialize(SpacePlayer_t player, bytestream* stream);
+SpacePlayer_t* Player_Deserialize(bytestream stream);
 
 #endif

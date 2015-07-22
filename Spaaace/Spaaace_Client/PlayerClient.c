@@ -1,90 +1,15 @@
 #include "PlayerClient.h"
 
-void PlayerClient_init()
-{
-    string message;
-    bytestream stream;
-    networkStatus_t status;
+#include <engine_render.h>
+#include <utils_matrix.h>
 
-    list_init(&ClientPlayerList);
+mesh_t* playerMesh;
 
-    //string_initStr(&message, "New Player:0,0,0;0;0!");
-    string_initStr(&message, "Player Connect:!");
-    bytestream_init(&stream, message.len);
-    bytestream_write(&stream, message.s, message.len);
-
-    CL_connectToServer("127.0.0.1", 4657, stream, SOCKET_PROTOCOL_TCP, &status);
-    if (status.error != NETWORK_ERROR_NONE)
-        printError(status);
-}
-
-void RenderClient(float viewMatrix[16])
-{
-    ClientPlayer_t* player;
-    for (uint i = 0; i < ClientPlayerList.size; i++)
-    {
-        player = ((ClientPlayer_t*)ClientPlayerList.content[i]);
-        //renderMesh(player->PlayerMesh, viewMatrix);
-    }
-}
-
-void ExtractPosition(string str_position, float position[3])
-{
-    string str_positionX;
-    string str_positionY;
-    string str_positionZ;
-    string tmp;
-
-    string_initStr(&tmp, "");
-    string_initStr(&str_positionX, "");
-    string_initStr(&str_positionY, "");
-    string_initStr(&str_positionZ, "");
-
-    str_substring(str_position, ',', &str_positionX);
-    str_substringIndex(str_position, str_positionX.len + 1, str_position.len, &tmp);
-    str_substring(tmp,',', &str_positionY);
-    str_substringIndex(str_position, str_positionX.len + str_positionY.len + 2, str_position.len, &str_positionZ);
-
-    position[0] = parseFloat(str_positionX.s);
-    position[1] = parseFloat(str_positionY.s);
-    position[2] = parseFloat(str_positionZ.s);
-}
-
-void CreateNewPlayerStringMessage(string message)
-{
-    string str_position;
-    string str_kill;
-    string str_death;
-    string tmpMessage;
-
-    string_initStr(&tmpMessage, "");
-    string_initStr(&str_position, "");
-    string_initStr(&str_kill, "");
-    string_initStr(&str_death, "");
-
-    float position[3];
-    int kill;
-    int death;
-
-    str_substring(message, ';', &str_position);
-    str_substringIndex(message, str_position.len+1, message.len, &tmpMessage);
-    str_substring(tmpMessage, ';', &str_kill);
-    str_substringIndex(message, str_position.len + str_kill.len + 2, message.len, &str_death);
-
-    ExtractPosition(str_position, position);
-
-    kill = parseInt(str_kill.s);
-    death = parseInt(str_death.s);
-
-    CreateNewPlayer(position, kill, death);
-}
-
-void CreateNewPlayer(float position[3], int kill, int death)
+void CreatePlayerMesh()
 {
     face_t *tempFace;
-    ClientPlayer_t *newPlayer = (ClientPlayer_t*)mem_alloc(sizeof(ClientPlayer_t));
 
-    newPlayer->PlayerMesh = newMesh();
+    playerMesh = newMesh();
 
     // Each face must be a triangle
     tempFace = addFace();
@@ -98,72 +23,24 @@ void CreateNewPlayer(float position[3], int kill, int death)
     addVertex(-0.5f, 1.0f, -0.25f, 0.0f, 1.0f);
     addVertex(-0.5f, 2.0f, -0.25f, 0.0f, 0.0f);
     addVertex(-0.5f, 1.0f, 0.25f, 1.0f, 0.0f);
-
-    updateMeshGeometry(newPlayer->PlayerMesh);
-
-    vectorCopy(newPlayer->PlayerMesh->origin, position);
-
-    newPlayer->BasePlayer = CreatePlayer(position, kill, death);
-
-    list_add(&ClientPlayerList, &newPlayer);
 }
 
-ClientPlayer_t *GetPlayerWithId(int playerId)
+void RenderPlayer(SpacePlayer_t* player, float viewMatrix[16])
 {
-    for (uint i = 0; i < ClientPlayerList.size; i++)
-    {
-		ClientPlayer_t *player = (ClientPlayer_t*)ClientPlayerList.content[i];
-        if (player->BasePlayer->Id == playerId)
-        {
-			return player;
-        }
-    }
-	return NULL;
+    vectorCopy(playerMesh->origin, player->Position);
+    mat_rotation(playerMesh->rotation,
+        player->Angles[0],
+        player->Angles[1],
+        player->Angles[2]);
+    renderMesh(playerMesh,viewMatrix);
 }
 
-void PlayerWantToMove(float position[3])
+SpacePlayer_t* CreateNewPlayer(bytestream message)
 {
-    string message;
-    string floatToCharTmp;
+    
+    SpacePlayer_t *player = (SpacePlayer_t*)mem_alloc(sizeof(SpacePlayer_t));
 
-    string_initStr(&message, "PlayerPosition:");
-    string_initFloat(&floatToCharTmp, position[0]);
-    string_appendStr(&message, floatToCharTmp.s);
-    string_appendStr(&message, ",");
-    string_initFloat(&floatToCharTmp, position[1]);
-    string_appendStr(&message, floatToCharTmp.s);
-    string_appendStr(&message, ",");
-    string_initFloat(&floatToCharTmp, position[2]);
-    string_appendStr(&message, floatToCharTmp.s);
-    string_appendStr(&message, ";");
+    player = Player_Deserialize(message);
 
-    //endMessage
-    string_appendStr(&message, "!");
-
-    CL_sendMessage(0, message);
-}
-
-void MovePlayer(float position[3], int PlayerId)
-{
-	ClientPlayer_t *player = GetPlayerWithId(PlayerId); 
-	if (player != NULL)
-    {
-		SetPlayerPosition(player->BasePlayer, position);
-        //erreur sur l'attribution du mesh
-        //vectorCopy(player.PlayerMesh->origin,position);
-    }
-    else
-        printf("Erreur dans la recherche de l'Id demandé.");
-}
-
-void MovePlayerMessage(string message)
-{
-    float position[3];
-    string str_position;
-    string_initStr(&str_position, "");
-    str_substring(message, ';', &str_position);
-
-    ExtractPosition(str_position, position);
-
-    MovePlayer(position, 0);
+    return player;
 }

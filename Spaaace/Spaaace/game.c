@@ -24,6 +24,7 @@ void updateGame(float deltaTime)
 			AngleVectors(player->Angles, forward, NULL, NULL);
 			vectorScale(proj->vel, 1, forward);
 			vectorCopy(proj->pos, player->Position);
+            list_add(&game.projectiles, proj);
 		}
 	}
 
