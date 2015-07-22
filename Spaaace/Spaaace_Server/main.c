@@ -6,6 +6,7 @@
 #include <Windows.h>
 #include "PlayerServer.h"
 #include "networkStruct.h"
+#include <utils_time.h>
 
 void MessageListener(networkUpdate_t update)
 {
@@ -57,21 +58,29 @@ int main(int argc, char **argv)
 {
     networkUpdate_t update;
     networkStatus_t status;
+	double lastTime = 0.0;
 
     setupNetwork();
     SV_initServer(32, 4657, SOCKET_PROTOCOL_TCP, &status);
+
+	time_init();
 
     if (status.error != NETWORK_ERROR_NONE)
         printError(status);
 
     while (true)
     {
+		double newTime = time_current_sec();
+		float deltaTime = (float)(newTime - lastTime);
+
         SV_checkForNewClients();
         SV_update(&update);
         if (update.count > 0)
         {
            MessageListener(update);
         }
+
+		updateGame(deltaTime);
 
 		Sleep(10);
     }

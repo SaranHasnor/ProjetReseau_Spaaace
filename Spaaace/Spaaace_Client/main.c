@@ -290,7 +290,11 @@ void renderFunc(void)
     {
         RenderPlayer(game.players.content[i],viewMatrix);
     }
-	//renderMesh(testMesh, viewMatrix);
+	
+	for (uint i = 0; i < game.projectiles.size; i++)
+	{
+		drawProjectile(game.projectiles.content[i], viewMatrix);
+	}
 }
 
 int main(int argc, char **argv)
