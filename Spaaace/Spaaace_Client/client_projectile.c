@@ -58,8 +58,8 @@ void drawProjectile(projectile_t *projectile, float viewMatrix[16])
 {
 	vectorCopy(_projMesh->origin, projectile->pos);
 	mat_rotation(_projMesh->rotation,
-		projectile->ang[0],
-		projectile->ang[1],
+		-projectile->ang[0],
+		projectile->ang[1] - 90,
 		projectile->ang[2],
 		true);
 	
