@@ -176,7 +176,7 @@ void initEngine()
 	}
 	bytestream_write(&stream, myRandomString, sizeof(char) * 16);
 
-    CL_connectToServer("127.0.0.1", 4657, stream, SOCKET_PROTOCOL_TCP, &status);
+    CL_connectToServer("10.33.2.72", 4657, stream, SOCKET_PROTOCOL_TCP, &status);
     if (status.error != NETWORK_ERROR_NONE)
         printError(status);
 }
