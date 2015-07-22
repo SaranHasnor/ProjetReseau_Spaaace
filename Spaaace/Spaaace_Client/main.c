@@ -8,9 +8,15 @@
 #include "PlayerClient.h"
 #include <utils_time.h>
 
+#include <GL/glut.h>
+
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <string.h>
+
+#define NB_STARS 1024
+
+float _stars[NB_STARS][3];
 
 void keyDownFunc(uchar key)
 {
@@ -96,8 +102,16 @@ void updateCamera(inputStruct_t input)
 
 void initEngine()
 {
-    setupNetwork();
+	uint i;
+	setupNetwork();
     PlayerClient_init();
+
+	for (i = 0; i < NB_STARS; i++)
+	{
+		vectorSet(_stars[i], randomValueBetween(-1.0f, 1.0f), randomValueBetween(-1.0f, 1.0f), randomValueBetween(-1.0f, 1.0f));
+		vectorNormalize(_stars[i]);
+		vectorScale(_stars[i], 100.0f, _stars[i]);
+	}
 }
 
 void MessageListener(networkUpdate_t update)
@@ -157,6 +171,19 @@ void updateFunc(timeStruct_t time, inputStruct_t input)
     }
 }
 
+void drawStars()
+{
+	uint i;
+
+	glColor3f(1.0f, 1.0f, 1.0f);
+	glBegin(GL_POINTS);
+	for (i = 0; i < NB_STARS; i++)
+	{
+		glVertex3fv(_stars[i]);
+	}
+	glEnd();
+}
+
 void renderFunc(void)
 {
 	float viewMatrix[16];
@@ -164,6 +191,8 @@ void renderFunc(void)
 	drawAxis();
 
 	engine_getViewMatrix(viewMatrix);
+
+	drawStars();
 
     RenderClient(viewMatrix);
 	//renderMesh(testMesh, viewMatrix);
