@@ -30,17 +30,19 @@ void CreatePlayerMesh()
 void RenderPlayer(SpacePlayer_t* player, float viewMatrix[16])
 {
     vectorCopy(playerMesh->origin, player->Position);
-    mat_rotation(playerMesh->rotation,
-        player->Angles[0],
-        player->Angles[1],
-        player->Angles[2]);
-    renderMesh(playerMesh,viewMatrix);
+	mat_rotation(playerMesh->rotation,
+		-player->Angles[0],
+		player->Angles[1] - 90,
+		player->Angles[2],
+		true);
+    
+	renderMesh(playerMesh, viewMatrix);
 }
 
 SpacePlayer_t* CreateNewPlayer()
 {
     SpacePlayer_t *player = (SpacePlayer_t*)mem_alloc(sizeof(SpacePlayer_t));
-
+	mem_set(player, 0, sizeof(SpacePlayer_t));
     return player;
 }
 

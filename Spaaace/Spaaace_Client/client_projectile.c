@@ -60,7 +60,8 @@ void drawProjectile(projectile_t *projectile, float viewMatrix[16])
 	mat_rotation(_projMesh->rotation,
 		projectile->ang[0],
 		projectile->ang[1],
-		projectile->ang[2]);
+		projectile->ang[2],
+		true);
 	
 	renderMesh(_projMesh, viewMatrix);
 }

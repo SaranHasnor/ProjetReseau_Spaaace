@@ -50,30 +50,33 @@ void mouseUpFunc(ushort button, int x, int y)
 
 void updateCamera(inputStruct_t input)
 {
-    float cameraPosition[3];
-	float velocity[3] = {0,0,0};
-    float cameraAngle[3];
-
-	if (!myPlayer)
+    if (!myPlayer)
 	{
 		return;
 	}
 
-	if (input.mouseButtons & INPUT_MOUSELEFT)
+	if (input.mouseButtons & INPUT_MOUSERIGHT)
 	{
 		float angle[3];
 
 		angle[0] = (float)input.mouseDelta[1];
 		angle[1] = -(float)input.mouseDelta[0];
 		angle[2] = 0;
-		engine_rotateCamera(angle);
-        engine_getCameraAngles(cameraAngle);
-        //mat_rotation(testMesh->rotation, cameraAngle[0] * (M_PI / 360), cameraAngle[1] * (M_PI / 360), cameraAngle[2] * (M_PI / 360));
+		vectorAdd(myPlayer->Angles, myPlayer->Angles, angle);
+
+		if (myPlayer->Angles[0] < -85)
+			myPlayer->Angles[0] = -85;
+		if (myPlayer->Angles[0] > 85)
+			myPlayer->Angles[0] = 85;
+
+		if (myPlayer->Angles[1] < -180)
+			myPlayer->Angles[1] += 360;
+		if (myPlayer->Angles[1] > 180)
+			myPlayer->Angles[1] -= 360;
 	}
 
 	if (input.key_timeHeld('z') > 0)
 	{
-        velocity[1] += 1.0f;
         ChangeMyPlayerInput(UpButton, true);
     }
     else
@@ -83,7 +86,6 @@ void updateCamera(inputStruct_t input)
 
 	if (input.key_timeHeld('s') > 0)
 	{
-        velocity[1] -= 1.0f;
         ChangeMyPlayerInput(DownButton, true);
 	}
     else
@@ -93,7 +95,6 @@ void updateCamera(inputStruct_t input)
 
 	if (input.key_timeHeld('d') > 0)
 	{
-        velocity[0] += 1.0f;
         ChangeMyPlayerInput(RightButton, true);
 	}
     else
@@ -103,7 +104,6 @@ void updateCamera(inputStruct_t input)
 
 	if (input.key_timeHeld('q') > 0)
 	{
-        velocity[0] -= 1.0f;
         ChangeMyPlayerInput(LeftButton, true);
 	}
     else
@@ -113,7 +113,6 @@ void updateCamera(inputStruct_t input)
 
 	if (input.key_timeHeld(' ') > 0)
 	{
-        velocity[2] += 1.0f;
         ChangeMyPlayerInput(UpperButton, true);
 	}
     else
@@ -123,7 +122,6 @@ void updateCamera(inputStruct_t input)
 
 	if (input.key_timeHeld('x') > 0)
 	{
-        velocity[2] -= 1.0f;
         ChangeMyPlayerInput(DownerButton, true);
 	}
     else
@@ -131,8 +129,8 @@ void updateCamera(inputStruct_t input)
         ChangeMyPlayerInput(DownerButton, false);
     }
 
-	engine_setCameraVelocity(velocity);
-    engine_getCameraPosition(cameraPosition);
+	engine_setCameraPosition(myPlayer->Position);
+	engine_setCameraAngles(myPlayer->Angles);
 }
 
 char* myRandomString = NULL;
@@ -145,6 +143,16 @@ void initEngine()
 
     list_init(&game.players);
     list_init(&game.projectiles);
+
+	//UI
+	/*interface_pushBlock(relativePlacement(0.48f, 0.48f, 0.04f, 0.04f));
+	interface_staticLabel("--", relativePlacement(0, 1, 1, 1), ANCHOR_CENTER);
+	interface_staticLabel("--", relativePlacement(0, -1, 1, 1), ANCHOR_CENTER);
+	interface_staticLabel("+", relativePlacement(0, 0, 1, 1), ANCHOR_CENTER);
+	interface_staticLabel("|", relativePlacement(1, 0, 1, 1), ANCHOR_CENTER);
+	interface_staticLabel("|", relativePlacement(-1, 0, 1, 1), ANCHOR_CENTER);
+	interface_popBlock();
+	interface_updateLayout();*/
 
 	setupNetwork();
 
@@ -213,7 +221,6 @@ void MessageListener(networkUpdate_t update)
 
 void updateFunc(timeStruct_t time, inputStruct_t input)
 {
-    bytestream 
     networkUpdate_t update;
 
 	if (time.deltaTime == time.currentTime)
