@@ -5,23 +5,11 @@
 
 #include "Player.h"
 #include <engine_render.h>
-#include <network_client.h>
 
-typedef struct {
-    SpacePlayer_t BasePlayer;
+SpacePlayer_t* myPlayer;
 
-    mesh_t* PlayerMesh;
-} ClientPlayer_t;
-
-ClientPlayer_t* myPlayer;
-
-void PlayerClient_init();
-void RenderClient(float viewMatrix[16]);
-void CreateNewPlayerStringMessage(string message);
-void CreateNewPlayer(float position[3], int kill, int death);
-void MovePlayer(float position[3], int PlayerId);
-void MovePlayerMessage(string message);
-void PlayerWantToMove(float position[3]);
-
+void CreatePlayerMesh();
+void RenderPlayer(SpacePlayer_t* player);
+SpacePlayer_t* CreateNewPlayer(bytestream message);
 
 #endif

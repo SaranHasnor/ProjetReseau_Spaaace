@@ -6,9 +6,12 @@
 #include <utils_matrix.h>
 #include <game.h>
 #include "PlayerClient.h"
+#include "client_projectile.h"
 #include <utils_time.h>
 
 #include <GL/glut.h>
+
+#include <network_client.h>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -93,7 +96,6 @@ void updateCamera(inputStruct_t input)
     //engine_setCameraPosition(playerPosition);
 	engine_setCameraVelocity(velocity);
     engine_getCameraPosition(cameraPosition);
-    PlayerWantToMove(cameraPosition);
 
     //testMesh->origin[0] = playerPosition[0];
     //testMesh->origin[1] = playerPosition[1];
@@ -103,8 +105,16 @@ void updateCamera(inputStruct_t input)
 void initEngine()
 {
 	uint i;
+    bytestream stream;
+    networkStatus_t status;
+
+    list_init(&game.players);
+    list_init(&game.projectiles);
+
 	setupNetwork();
-    PlayerClient_init();
+
+    createProjectileMesh();
+    CreatePlayerMesh();
 
 	for (i = 0; i < NB_STARS; i++)
 	{
@@ -112,6 +122,12 @@ void initEngine()
 		vectorNormalize(_stars[i]);
 		vectorScale(_stars[i], 100.0f, _stars[i]);
 	}
+
+    bytestream_init(&stream, 0);
+
+    CL_connectToServer("127.0.0.1", 4657, stream, SOCKET_PROTOCOL_TCP, &status);
+    if (status.error != NETWORK_ERROR_NONE)
+        printError(status);
 }
 
 void MessageListener(networkUpdate_t update)
@@ -122,7 +138,7 @@ void MessageListener(networkUpdate_t update)
         
         if (update.messages[i].type == NETWORK_MESSAGE_CONNECT)
         {
-            //CreateNewPlayerStringMessage();
+             list_add(&game.players,CreateNewPlayer(update.messages[i].content));
         }
 		else if (update.messages[i].type == NETWORK_MESSAGE_CUSTOM)
         { // Update
@@ -180,7 +196,10 @@ void renderFunc(void)
 
 	drawStars();
 
-    RenderClient(viewMatrix);
+    for (int i = 0; i < game.players.size; i++)
+    {
+        RenderPlayer(game.players.content[i],viewMatrix);
+    }
 	//renderMesh(testMesh, viewMatrix);
 }
 
