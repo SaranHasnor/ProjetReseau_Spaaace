@@ -66,33 +66,57 @@ void updateCamera(inputStruct_t input)
 
 	if (input.key_timeHeld('z') > 0)
 	{
-        velocity[1] += 1.00f;
-	}
+        ChangeMyPlayerInput(UpButton, true);
+    }
+    else
+    {
+        ChangeMyPlayerInput(UpButton, false);
+    }
 
 	if (input.key_timeHeld('s') > 0)
 	{
-        velocity[1] -= 1.00f;
+        ChangeMyPlayerInput(DownButton, true);
 	}
+    else
+    {
+        ChangeMyPlayerInput(DownButton, false);
+    }
 
 	if (input.key_timeHeld('d') > 0)
 	{
-        velocity[0] += 1.00f;
+        ChangeMyPlayerInput(RightButton, true);
 	}
+    else
+    {
+        ChangeMyPlayerInput(RightButton, false);
+    }
 
 	if (input.key_timeHeld('q') > 0)
 	{
-        velocity[0] -= 1.00f;
+        ChangeMyPlayerInput(LeftButton, true);
 	}
+    else
+    {
+        ChangeMyPlayerInput(LeftButton, false);
+    }
 
 	if (input.key_timeHeld(' ') > 0)
 	{
-        velocity[2] += 1.00f;
+        ChangeMyPlayerInput(UpperButton, true);
 	}
+    else
+    {
+        ChangeMyPlayerInput(UpperButton, false);
+    }
 
 	if (input.key_timeHeld('x') > 0)
 	{
-        velocity[2] -= 1.00f;
+        ChangeMyPlayerInput(DownerButton, true);
 	}
+    else
+    {
+        ChangeMyPlayerInput(DownerButton, false);
+    }
 
     //engine_setCameraPosition(playerPosition);
 	engine_setCameraVelocity(velocity);

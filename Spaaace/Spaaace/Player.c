@@ -35,6 +35,34 @@ bool PlayerTakeDamage(SpacePlayer_t* Player, float AttackValue)
 
 void UpdatePlayer(SpacePlayer_t* Player, float deltaTime)
 {
+    float velocity[3] = { 0, 0, 0 };
+    if (Player->input.UpButton)
+    {
+        velocity[0] += 1;
+    }
+
+    if (Player->input.DownButton)
+    {
+        velocity[0] -= 1;
+    }
+
+    if (Player->input.LeftButton)
+    {
+        velocity[1] -= 1;
+    }
+
+    if (Player->input.UpperButton)
+    {
+         velocity[2] += 1;
+    }
+
+    if (Player->input.DownerButton)
+    {
+        velocity[2] -= 1;
+    }
+
+    vectorCopy(&Player->Velocity, velocity);
+
 	vectorMA(Player->Position, Player->Position, deltaTime, Player->Velocity);
 }
 

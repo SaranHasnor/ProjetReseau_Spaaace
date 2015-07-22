@@ -10,6 +10,8 @@ typedef struct{
     bool DownButton;
     bool LeftButton;
     bool RightButton;
+    bool UpperButton;
+    bool DownerButton;
     bool AttackButton;
 }PlayerInput_t;
 
