@@ -16,6 +16,15 @@ void updateGame(float deltaTime)
 		SpacePlayer_t *player = game.players.content[i];
 
 		UpdatePlayer(player, deltaTime);
+
+        if (player->input.AttackButton)
+        {
+            float forward[3];
+            projectile_t *proj = newProjectile(player->Id, 5.0f);
+            AngleVectors(player->Angles, forward, NULL, NULL);
+            vectorScale(proj->vel, 1, forward);
+            vectorCopy(proj->pos, player->Position);
+        }
 	}
 
 	for (i = 0; i < game.projectiles.size; i++)

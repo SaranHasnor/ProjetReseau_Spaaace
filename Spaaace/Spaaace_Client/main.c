@@ -122,7 +122,7 @@ void MessageListener(networkUpdate_t update)
         
         if (update.messages[i].type == NETWORK_MESSAGE_CONNECT)
         {
-            CreateNewPlayerStringMessage();
+            //CreateNewPlayerStringMessage();
         }
 		else if (update.messages[i].type == NETWORK_MESSAGE_CUSTOM)
         { // Update
