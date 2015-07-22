@@ -17,5 +17,3 @@ typedef struct {
 ServerPlayer_t *CreateNewPlayer(int senderId);
 
 #endif
-
-
