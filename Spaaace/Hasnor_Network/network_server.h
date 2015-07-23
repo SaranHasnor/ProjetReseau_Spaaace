@@ -1,6 +1,6 @@
 #include "network_utils.h"
 
-extern void setupNetwork();
+extern void setupNetwork(long worryTime, long timeoutTime);
 extern void shutdownNetwork();
 
 void SV_initServer(int maxConnections, unsigned short port, socketProtocol_t protocol, networkStatus_t *status);

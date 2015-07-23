@@ -60,8 +60,9 @@ int main(int argc, char **argv)
     networkUpdate_t update;
     networkStatus_t status;
 	double lastTime = 0.0;
+	double lastBigUpdateTime = 0.0;
 
-    setupNetwork();
+    setupNetwork(1000, 10000);
     SV_initServer(32, 4657, SOCKET_PROTOCOL_TCP, &status);
 
 	time_init();
@@ -73,6 +74,7 @@ int main(int argc, char **argv)
     {
 		double newTime = time_current_sec();
 		float deltaTime = (float)(newTime - lastTime);
+		float timeSinceLastBigUpdate = (float)(newTime - lastBigUpdateTime);
 
         SV_checkForNewClients();
         SV_update(&update);
@@ -82,6 +84,22 @@ int main(int argc, char **argv)
         }
 
 		BG_gameLoop(deltaTime);
+		lastTime = newTime;
+
+		if (timeSinceLastBigUpdate >= 0.25f)
+		{
+			uint i;
+			for (i = 0; i < game.players.size; i++)
+			{
+				networkStruct_t netStruct;
+				bytestream stream;
+				BG_initNetworkStructWithPlayer(&netStruct, *(player_t*)game.players.content[i]);
+				BG_serializeNetworkStruct(&netStruct, &stream);
+				SV_sendMessage(-1, stream);
+			}
+
+			timeSinceLastBigUpdate = (float)newTime;
+		}
 
 		Sleep(10);
     }

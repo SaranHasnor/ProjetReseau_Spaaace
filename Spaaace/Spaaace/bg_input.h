@@ -6,13 +6,16 @@
 #include <utils_bytestream.h>
 
 typedef struct {
-    bool forward;
-    bool back;
-    bool left;
-    bool right;
-    bool up;
-    bool down;
-    bool attack;
+    bool	forward;
+    bool	back;
+    bool	left;
+    bool	right;
+    bool	up;
+    bool	down;
+
+    bool	attack;
+
+	int		angleDelta[2];
 } playerInput_t;
 
 void BG_serializePlayerInput(playerInput_t *in, bytestream *out);

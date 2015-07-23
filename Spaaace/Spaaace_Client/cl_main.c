@@ -121,25 +121,13 @@ void updateCamera(inputStruct_t input)
 		return;
 	}
 
+	myPlayer->input.angleDelta[0] = 0;
+	myPlayer->input.angleDelta[1] = 0;
+
 	if (input.mouseButtons & INPUT_MOUSERIGHT)
 	{
-		float rotation[3];
-
-		rotation[0] = (float)input.mouseDelta[1];
-		rotation[1] = -(float)input.mouseDelta[0];
-		rotation[2] = 0;
-		
-		vectorAdd(myPlayer->ang, myPlayer->ang, rotation);
-
-		if (myPlayer->ang[0] < -85)
-			myPlayer->ang[0] = -85;
-		if (myPlayer->ang[0] > 85)
-			myPlayer->ang[0] = 85;
-
-		if (myPlayer->ang[1] < -180)
-			myPlayer->ang[1] += 360;
-		if (myPlayer->ang[1] > 180)
-			myPlayer->ang[1] -= 360;
+		myPlayer->input.angleDelta[0] = input.mouseDelta[1];
+		myPlayer->input.angleDelta[1] = -input.mouseDelta[0];
 	}
 
 	engine_setCameraPosition(myPlayer->pos);
@@ -164,8 +152,6 @@ void initEngine()
 	interface_staticLabel("|", relativePlacement(-1, 0, 1, 1), ANCHOR_CENTER);
 	interface_popBlock();
 	interface_updateLayout();
-
-	setupNetwork();
 
     createProjectileMesh();
     createPlayerMesh();
@@ -207,16 +193,28 @@ void handleMessages(networkUpdate_t update)
 			networkStruct_t net;
 			player_t *player = BG_getPlayerWithID(update.messages[i].senderID);
 
-			if (player != myPlayer)
+			BG_deserializeNetworkStruct(&update.messages[i].content, &net);
+
+			if (!player)
 			{
-				if (!player)
+				if (!net.inputOnly)
+				{ // Probably the server, fetch the ID from the struct
+					player = BG_getPlayerWithID(net.content.player.id);
+					if (!player)
+					{
+						player = createNewPlayer(net.content.player.id);
+						list_add(&game.players, player);
+					}
+				}
+				else
 				{
 					player = createNewPlayer(update.messages[i].senderID);
 					list_add(&game.players, player);
 				}
+			}
 
-				BG_deserializeNetworkStruct(&update.messages[i].content, &net);
-
+			if (player != myPlayer)
+			{ // TODO: If it's us, make this change smoother
 				if (net.inputOnly)
 				{
 					player->input = net.content.input;
@@ -287,8 +285,6 @@ void renderFunc(void)
 	uint i;
 	float viewMatrix[16];
 
-	drawAxis();
-
 	engine_getViewMatrix(viewMatrix);
 
 	drawStars();
@@ -309,6 +305,8 @@ int main(int argc, char **argv)
 	engineListener_t listener;
 
     time_init();
+
+	setupNetwork(1000, 10000);
 
 	listener.keyDownFunc = keyDownFunc;
 	listener.keyUpFunc = keyUpFunc;

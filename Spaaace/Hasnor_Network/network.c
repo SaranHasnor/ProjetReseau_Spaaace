@@ -23,6 +23,9 @@ networkMode_t _networkMode = NETWORK_MODE_LOCAL;
 networkConnection_t *_connections = NULL;
 uint _maxConnections = 0;
 
+long _worry = 10000;		// Seconds before sending a heartbeat
+long _timeout = 30000;		// Seconds before dropping a connection
+
 networkMode_t currentNetworkMode()
 {
 	return _networkMode;
@@ -33,10 +36,13 @@ uint maxConnections()
 	return _maxConnections;
 }
 
-void setupNetwork()
+void setupNetwork(long worryTime, long timeoutTime)
 {
 	WSADATA data;
 	WSAStartup(MAKEWORD(2, 2), &data);
+
+	_worry = worryTime;
+	_timeout = timeoutTime;
 }
 
 void shutdownNetwork()
@@ -277,20 +283,18 @@ void disconnect()
 
 void checkForTimeOuts()
 {
-	const long timeout = 30000;
-	const long worry = 10000;
 	long curTime = time_current_ms();
 
 	if (_networkMode == NETWORK_MODE_CLIENT)
 	{
 		networkConnection_t *connection = &_connections[0];
 		
-		if ((curTime - connection->lastInActivity) > timeout)
+		if ((curTime - connection->lastInActivity) > _timeout)
 		{ // Lost connection to the server
 			printf("Server timed out, dropping\n");
 			disconnect();
 		}
-		else if ((curTime - connection->lastOutActivity) > worry)
+		else if ((curTime - connection->lastOutActivity) > _worry)
 		{ // Are we still connected?
 			bytestream temp;
 			bytestream_init(&temp, 0);
@@ -305,12 +309,12 @@ void checkForTimeOuts()
 			networkConnection_t *connection = &_connections[i];
 			if (connection->socket != INVALID_SOCKET)
 			{
-				if ((curTime - connection->lastInActivity) > timeout)
+				if ((curTime - connection->lastInActivity) > _timeout)
 				{ // This client has been idle for too long, drop it
 					printf("Dropping idle connection %i\n", connection->id);
 					_closeConnection(connection, true);
 				}
-				else if ((curTime - connection->lastOutActivity) > worry)
+				else if ((curTime - connection->lastOutActivity) > _worry)
 				{ // Can you hear meeeee
 					bytestream temp;
 					bytestream_init(&temp, 0);
@@ -419,16 +423,16 @@ void sendMessage(networkMessageType_t type, int senderID, int receiverID, bytest
 	bytestream_destroy(&message.content);
 }
 
-uint _decodeMessage(bytestream in, networkMessage_t *out)
+uint _decodeMessage(bytestream *in, networkMessage_t *out)
 { // Returns the size of the decoded message
 	uint cursor = 0;
 	uint size;
-	cursor += bytestream_read(&in, (byte*)&size, sizeof(uint));
-	cursor += bytestream_read(&in, (byte*)&out->type, sizeof(out->type));
-	cursor += bytestream_read(&in, (byte*)&out->senderID, sizeof(out->senderID));
-	cursor += bytestream_read(&in, (byte*)&out->receiverID, sizeof(out->receiverID));
+	cursor += bytestream_read(in, (byte*)&size, sizeof(uint));
+	cursor += bytestream_read(in, (byte*)&out->type, sizeof(out->type));
+	cursor += bytestream_read(in, (byte*)&out->senderID, sizeof(out->senderID));
+	cursor += bytestream_read(in, (byte*)&out->receiverID, sizeof(out->receiverID));
 	bytestream_init(&out->content, size - cursor);
-	bytestream_read(&in, out->content.data, out->content.len);
+	bytestream_read(in, out->content.data, out->content.len);
 	return size;
 }
 
@@ -467,7 +471,7 @@ void receiveMessages(networkUpdate_t *update)
 
 					out = &update->messages[update->count-1];
 
-					decoded += _decodeMessage(inMessage, out);
+					decoded += _decodeMessage(&inMessage, out);
 				
 					if (out->senderID == -1)
 					{ // Update the sender ID

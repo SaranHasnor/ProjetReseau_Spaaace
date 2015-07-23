@@ -19,7 +19,7 @@ typedef enum {
 networkMode_t currentNetworkMode();
 uint maxConnections();
 
-void setupNetwork();
+void setupNetwork(long worryTime, long timeoutTime);
 void shutdownNetwork();
 
 bool createHostSocket(int maxConnections, unsigned short port, socketProtocol_t protocol, networkStatus_t *status);

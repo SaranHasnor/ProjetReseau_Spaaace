@@ -60,6 +60,19 @@ void BG_updatePlayer(player_t *player, float deltaTime)
         velocity[2] -= 1;
     }
 
+	player->ang[0] += player->input.angleDelta[0];
+	player->ang[1] += player->input.angleDelta[1];
+
+	if (player->ang[0] < -85)
+		player->ang[0] = -85;
+	if (player->ang[0] > 85)
+		player->ang[0] = 85;
+
+	if (player->ang[1] < -180)
+		player->ang[1] += 360;
+	if (player->ang[1] > 180)
+		player->ang[1] -= 360;
+
 	// Now map his movement to his local axis (except for the Z axis)
 	AngleVectors(player->ang, forward, right, NULL);
 	vectorScale(player->vel, velocity[2], axis[2]);
