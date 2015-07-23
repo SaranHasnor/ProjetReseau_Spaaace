@@ -3,6 +3,8 @@
 #include <utils.h>
 #include <utils_vector.h>
 
+#include <utils_time.h>
+
 
 projectile_t *BG_newProjectile(int ownerID, int damage)
 {
@@ -10,6 +12,7 @@ projectile_t *BG_newProjectile(int ownerID, int damage)
 	mem_set(proj, 0, sizeof(projectile_t));
 	proj->ownerID = ownerID;
 	proj->damage = damage;
+	proj->spawnTime = time_current_ms();
 	return proj;
 }
 

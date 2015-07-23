@@ -3,6 +3,7 @@
 #include <utils_vector.h>
 
 const int _maxHealth = 100;
+const float _playerSpeed = 10.0f;
 
 void BG_initPlayer(player_t *player, int id)
 {
@@ -80,7 +81,7 @@ void BG_updatePlayer(player_t *player, float deltaTime)
 	vectorMA(player->vel, player->vel, velocity[0], right);
 
 	// And finally move him
-	vectorMA(player->pos, player->pos, deltaTime, player->vel);
+	vectorMA(player->pos, player->pos, deltaTime * _playerSpeed, player->vel);
 }
 
 void BG_serializePlayer(player_t *in, bytestream* out)

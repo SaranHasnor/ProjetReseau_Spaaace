@@ -24,6 +24,7 @@
 
 player_t *myPlayer = NULL;
 
+mesh_t *_skybox = NULL;
 float _stars[NB_STARS][3];
 
 void keyDownFunc(uchar key)
@@ -134,6 +135,81 @@ void updateCamera(inputStruct_t input)
 	engine_setCameraAngles(myPlayer->ang);
 }
 
+void createSkybox()
+{
+	const float boxSize = 150.0f;
+	uint i; 
+
+	_skybox = newMesh();
+
+	// Bottom
+	addFace();
+	addVertex(-boxSize, boxSize, -boxSize, 1.0f, 1.0f);
+	addVertex(-boxSize, -boxSize, -boxSize, 1.0f, 0.0f);
+	addVertex(boxSize, -boxSize, -boxSize, 0.0f, 0.0f);
+	addFace();
+	addVertex(-boxSize, boxSize, -boxSize, 1.0f, 1.0f);
+	addVertex(boxSize, -boxSize, -boxSize, 0.0f, 0.0f);
+	addVertex(boxSize, boxSize, -boxSize, 0.0f, 1.0f);
+
+	// Top
+	addFace();
+	addVertex(-boxSize, boxSize, boxSize, 0.0f, 1.0f);
+	addVertex(-boxSize, -boxSize, boxSize, 0.0f, 0.0f);
+	addVertex(boxSize, -boxSize, boxSize, 1.0f, 0.0f);
+	addFace();
+	addVertex(-boxSize, boxSize, boxSize, 0.0f, 1.0f);
+	addVertex(boxSize, -boxSize, boxSize, 1.0f, 0.0f);
+	addVertex(boxSize, boxSize, boxSize, 1.0f, 1.0f);
+
+	// Left
+	addFace();
+	addVertex(-boxSize, -boxSize, boxSize, 0.0f, 1.0f);
+	addVertex(-boxSize, -boxSize, -boxSize, 0.0f, 0.0f);
+	addVertex(-boxSize, boxSize, -boxSize, 1.0f, 0.0f);
+	addFace();
+	addVertex(-boxSize, -boxSize, boxSize, 0.0f, 1.0f);
+	addVertex(-boxSize, boxSize, -boxSize, 1.0f, 0.0f);
+	addVertex(-boxSize, boxSize, boxSize, 1.0f, 1.0f);
+
+	// Right
+	addFace();
+	addVertex(boxSize, -boxSize, boxSize, 1.0f, 1.0f);
+	addVertex(boxSize, -boxSize, -boxSize, 1.0f, 0.0f);
+	addVertex(boxSize, boxSize, -boxSize, 0.0f, 0.0f);
+	addFace();
+	addVertex(boxSize, -boxSize, boxSize, 1.0f, 1.0f);
+	addVertex(boxSize, boxSize, -boxSize, 0.0f, 0.0f);
+	addVertex(boxSize, boxSize, boxSize, 0.0f, 1.0f);
+
+	// Front
+	addFace();
+	addVertex(-boxSize, boxSize, boxSize, 1.0f, 1.0f);
+	addVertex(-boxSize, boxSize, -boxSize, 1.0f, 0.0f);
+	addVertex(boxSize, boxSize, -boxSize, 0.0f, 0.0f);
+	addFace();
+	addVertex(-boxSize, boxSize, boxSize, 1.0f, 1.0f);
+	addVertex(boxSize, boxSize, -boxSize, 0.0f, 0.0f);
+	addVertex(boxSize, boxSize, boxSize, 0.0f, 1.0f);
+
+	// Back
+	addFace();
+	addVertex(-boxSize, -boxSize, boxSize, 0.0f, 1.0f);
+	addVertex(-boxSize, -boxSize, -boxSize, 0.0f, 0.0f);
+	addVertex(boxSize, -boxSize, -boxSize, 1.0f, 0.0f);
+	addFace();
+	addVertex(-boxSize, -boxSize, boxSize, 0.0f, 1.0f);
+	addVertex(boxSize, -boxSize, -boxSize, 1.0f, 0.0f);
+	addVertex(boxSize, -boxSize, boxSize, 1.0f, 1.0f);
+
+	for (i = 0; i < _skybox->nbFaces; i++)
+	{
+		vectorCopy(_skybox->faces[i]->color, nullVec);
+	}
+	
+	updateMeshGeometry(_skybox);
+}
+
 void initEngine()
 {
 	uint i;
@@ -153,6 +229,7 @@ void initEngine()
 	interface_popBlock();
 	interface_updateLayout();
 
+	createSkybox();
     createProjectileMesh();
     createPlayerMesh();
 
@@ -214,7 +291,7 @@ void handleMessages(networkUpdate_t update)
 			}
 
 			if (player != myPlayer)
-			{ // TODO: If it's us, make this change smoother
+			{ // TODO: If it's us, make this change smoother. Disabling it for now
 				if (net.inputOnly)
 				{
 					player->input = net.content.input;
@@ -263,6 +340,12 @@ void updateFunc(timeStruct_t time, inputStruct_t input)
             BG_serializeNetworkStruct(&netStruct, &stream);
 
             CL_sendMessage(-1, stream);
+
+			if (myPlayer->health == 0)
+			{ // That's... extreme?
+				CL_disconnectFromServer(NULL);
+				engine_shutdown();
+			}
         }
     }
 }
@@ -271,6 +354,13 @@ void drawStars()
 {
 	uint i;
 
+	glPushMatrix();
+	if (myPlayer)
+	{ // Create some kind of parallax so the player never goes past the stars (unless he tries very hard)
+		// This makes the stars disappear if you get too close for some reason
+		glTranslatef(0.9f * myPlayer->pos[0], 0.9f * myPlayer->pos[1], 0.9f * myPlayer->pos[2]);
+	}
+
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glBegin(GL_POINTS);
 	for (i = 0; i < NB_STARS; i++)
@@ -278,6 +368,8 @@ void drawStars()
 		glVertex3fv(_stars[i]);
 	}
 	glEnd();
+
+	glPopMatrix();
 }
 
 void renderFunc(void)
@@ -286,6 +378,8 @@ void renderFunc(void)
 	float viewMatrix[16];
 
 	engine_getViewMatrix(viewMatrix);
+
+	renderMesh(_skybox, viewMatrix);
 
 	drawStars();
 

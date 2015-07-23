@@ -400,7 +400,7 @@ void sendMessage(networkMessageType_t type, int senderID, int receiverID, bytest
 				{
 					if (!_doSend(&_connections[i], serializedMessage))
 					{
-						printf("Failed to transfer message to client %i\n", i);
+						printf("Failed to send broadcasted message to client %i\n", i);
 					}
 				}
 			}
@@ -409,7 +409,14 @@ void sendMessage(networkMessageType_t type, int senderID, int receiverID, bytest
 		{
 			if (!_doSend(target, serializedMessage))
 			{
-				printf("Failed to send message to server\n");
+				if (_networkMode == NETWORK_MODE_HOST)
+				{
+					printf("Failed to send message to client %i\n", target->id);
+				}
+				else
+				{
+					printf("Failed to send message to server\n");
+				}
 			}
 		}
 

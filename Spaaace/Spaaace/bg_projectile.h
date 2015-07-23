@@ -10,6 +10,8 @@ typedef struct {
 	float	*target[3];
 
 	int		damage;
+
+	long	spawnTime;
 } projectile_t;
 
 

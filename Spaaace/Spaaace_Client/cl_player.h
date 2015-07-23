@@ -6,8 +6,6 @@
 #include <bg_player.h>
 #include <engine_render.h>
 
-typedef enum { UpButton, DownButton, LeftButton, RightButton, UpperButton, DownerButton, AttackButton } InputValue;
-
 extern player_t *myPlayer;
 
 void createPlayerMesh();

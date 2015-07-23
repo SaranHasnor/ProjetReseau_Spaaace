@@ -25,7 +25,7 @@ void handleMessages(networkUpdate_t update)
 			player->connectionData.cursor = 0;
 
 			for (j = 0; j < game.players.size - 1; j++)
-			{ // Sync their player data with the new one
+			{ // Send the newcomer a list of all players
 				networkStruct_t net;
 				bytestream stream;
 				BG_initNetworkStructWithPlayer(&net, ((serverPlayer_t*)game.players.content[j])->BasePlayer);
@@ -50,7 +50,9 @@ void handleMessages(networkUpdate_t update)
 		}
 		else if (update.messages[i].type == NETWORK_MESSAGE_EXIT)
 		{
-
+			player_t *player = BG_getPlayerWithID(update.messages[i].senderID);
+			list_remove(&game.players, player);
+			mem_free(player);
 		}
     }
 }

@@ -75,9 +75,11 @@
   <ItemGroup>
     <ClCompile Include="sv_main.c" />
     <ClCompile Include="sv_player.c" />
+    <ClCompile Include="sv_projectile.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sv_player.h" />
+    <ClInclude Include="sv_projectile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

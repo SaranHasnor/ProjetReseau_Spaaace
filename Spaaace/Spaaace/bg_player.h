@@ -18,6 +18,7 @@ typedef struct {
 
     uint			health;
     int				score;
+	long			lastShotTime;
 } player_t;
 
 void BG_initPlayer(player_t *player, int id);

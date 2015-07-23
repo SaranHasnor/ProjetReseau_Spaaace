@@ -488,6 +488,11 @@ void renderMesh(const mesh_t *mesh, float viewMatrix[16])
 		glUniform4fv(program->colorLocation, 1, face->color);
 
 		glDrawElements(GL_TRIANGLES, face->nbVertices, GL_UNSIGNED_SHORT, NULL);
+
+		if (gotTexture)
+		{
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
 	}
 	glUseProgram(0);
 }

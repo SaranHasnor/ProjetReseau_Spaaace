@@ -7,49 +7,55 @@ mesh_t *_projMesh = NULL;
 
 void createProjectileMesh()
 {
+	uint i;
 	_projMesh = newMesh();
 
 	// Head
 	addFace();
-	addVertex(0.0f, 0.25f, 0.0f, 0.5f, 1.0f);
-	addVertex(-0.25f, 0.0f, 0.25f, 0.0f, 0.5f);
-	addVertex(0.25f, 0.0f, 0.25f, 1.0f, 0.5f);
+	addVertex(0.0f, 0.1f, 0.0f, 0.5f, 1.0f);
+	addVertex(-0.1f, 0.0f, 0.1f, 0.0f, 0.5f);
+	addVertex(0.1f, 0.0f, 0.1f, 1.0f, 0.5f);
 
 	addFace();
-	addVertex(0.0f, 0.25f, 0.0f, 0.5f, 1.0f);
-	addVertex(-0.25f, 0.0f, -0.25f, 0.0f, 0.5f);
-	addVertex(0.25f, 0.0f, -0.25f, 1.0f, 0.5f);
+	addVertex(0.0f, 0.1f, 0.0f, 0.5f, 1.0f);
+	addVertex(-0.1f, 0.0f, -0.1f, 0.0f, 0.5f);
+	addVertex(0.1f, 0.0f, -0.1f, 1.0f, 0.5f);
 
 	addFace();
-	addVertex(0.0f, 0.25f, 0.0f, 0.5f, 1.0f);
-	addVertex(-0.25f, 0.0f, 0.25f, 0.0f, 0.5f);
-	addVertex(-0.25f, 0.0f, -0.25f, 1.0f, 0.5f);
+	addVertex(0.0f, 0.1f, 0.0f, 0.5f, 1.0f);
+	addVertex(-0.1f, 0.0f, 0.1f, 0.0f, 0.5f);
+	addVertex(-0.1f, 0.0f, -0.1f, 1.0f, 0.5f);
 
 	addFace();
-	addVertex(0.0f, 0.25f, 0.0f, 0.5f, 1.0f);
-	addVertex(0.25f, 0.0f, 0.25f, 0.0f, 0.5f);
-	addVertex(0.25f, 0.0f, -0.25f, 1.0f, 0.5f);
+	addVertex(0.0f, 0.1f, 0.0f, 0.5f, 1.0f);
+	addVertex(0.1f, 0.0f, 0.1f, 0.0f, 0.5f);
+	addVertex(0.1f, 0.0f, -0.1f, 1.0f, 0.5f);
 
 	// Tail
 	addFace();
-	addVertex(0.0f, -1.0f, 0.0f, 0.5f, 0.0f);
-	addVertex(-0.25f, 0.0f, 0.25f, 0.0f, 0.5f);
-	addVertex(0.25f, 0.0f, 0.25f, 1.0f, 0.5f);
+	addVertex(0.0f, -0.5f, 0.0f, 0.5f, 0.0f);
+	addVertex(-0.1f, 0.0f, 0.1f, 0.0f, 0.5f);
+	addVertex(0.1f, 0.0f, 0.1f, 1.0f, 0.5f);
 
 	addFace();
-	addVertex(0.0f, -1.0f, 0.0f, 0.5f, 0.0f);
-	addVertex(-0.25f, 0.0f, -0.25f, 0.0f, 0.5f);
-	addVertex(0.25f, 0.0f, -0.25f, 1.0f, 0.5f);
+	addVertex(0.0f, -0.5f, 0.0f, 0.5f, 0.0f);
+	addVertex(-0.1f, 0.0f, -0.1f, 0.0f, 0.5f);
+	addVertex(0.1f, 0.0f, -0.1f, 1.0f, 0.5f);
 
 	addFace();
-	addVertex(0.0f, -1.0f, 0.0f, 0.5f, 0.0f);
-	addVertex(-0.25f, 0.0f, 0.25f, 0.0f, 0.5f);
-	addVertex(-0.25f, 0.0f, -0.25f, 1.0f, 0.5f);
+	addVertex(0.0f, -0.5f, 0.0f, 0.5f, 0.0f);
+	addVertex(-0.1f, 0.0f, 0.1f, 0.0f, 0.5f);
+	addVertex(-0.1f, 0.0f, -0.1f, 1.0f, 0.5f);
 
 	addFace();
-	addVertex(0.0f, -1.0f, 0.0f, 0.5f, 0.0f);
-	addVertex(0.25f, 0.0f, 0.25f, 0.0f, 0.5f);
-	addVertex(0.25f, 0.0f, -0.25f, 1.0f, 0.5f);
+	addVertex(0.0f, -0.5f, 0.0f, 0.5f, 0.0f);
+	addVertex(0.1f, 0.0f, 0.1f, 0.0f, 0.5f);
+	addVertex(0.1f, 0.0f, -0.1f, 1.0f, 0.5f);
+
+	for (i = 0; i < _projMesh->nbFaces; i++)
+	{
+		vectorSet(_projMesh->faces[i]->color, 1.0f, 0.5f, 0.5f);
+	}
 
     updateMeshGeometry(_projMesh);
 }
