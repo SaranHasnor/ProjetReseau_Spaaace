@@ -15,36 +15,36 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="game.c">
+    <ClCompile Include="bg_game.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Player.c">
+    <ClCompile Include="bg_network.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="projectile.c">
+    <ClCompile Include="bg_player.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerInput.c">
+    <ClCompile Include="bg_input.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="networkStruct.c">
+    <ClCompile Include="bg_projectile.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="game.h">
+    <ClInclude Include="bg_player.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
+    <ClInclude Include="bg_input.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="projectile.h">
+    <ClInclude Include="bg_projectile.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerInput.h">
+    <ClInclude Include="bg_game.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="networkStruct.h">
+    <ClInclude Include="bg_network.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

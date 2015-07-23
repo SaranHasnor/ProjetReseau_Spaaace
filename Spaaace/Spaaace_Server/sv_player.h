@@ -3,8 +3,8 @@
 #ifndef _PLAYER_SERVER_DEFINED
 #define _PLAYER_SERVER_DEFINED
 
-#include "Player.h"
-#include <game.h>
+#include <bg_player.h>
+#include <bg_game.h>
 #include <utils_list.h>
 #include <network_server.h>
 

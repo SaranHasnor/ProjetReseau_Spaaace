@@ -1,4 +1,4 @@
-#include "game.h"
+#include "bg_game.h"
 
 #include <utils_vector.h>
 
@@ -13,7 +13,7 @@ void updateGame(float deltaTime)
 
 	for (i = 0; i < game.players.size; i++)
 	{
-		SpacePlayer_t *player = game.players.content[i];
+		SpacePlayer_t *player = (SpacePlayer_t*)game.players.content[i];
 
 		UpdatePlayer(player, deltaTime);
 
@@ -31,13 +31,13 @@ void updateGame(float deltaTime)
 
 	for (i = 0; i < game.projectiles.size; i++)
 	{
-		projectile_t *proj = game.projectiles.content[i];
+		projectile_t *proj = (projectile_t*)game.projectiles.content[i];
 
 		updateProjectile(proj, deltaTime);
 
 		for (j = 0; j < game.players.size; j++)
 		{
-			SpacePlayer_t *player = game.players.content[j];
+			SpacePlayer_t *player = (SpacePlayer_t*)game.players.content[j];
 
 			if (player->Id != proj->ownerID && projectileDistanceToPoint(proj, player->Position) < _playerHitboxSize)
 			{
@@ -51,7 +51,8 @@ void updateGame(float deltaTime)
 
 SpacePlayer_t *GetPlayerWithNetworkId(int playerId)
 {
-    for (uint i = 0; i < game.players.size; i++)
+	uint i;
+    for (i = 0; i < game.players.size; i++)
     {
         SpacePlayer_t *player = (SpacePlayer_t*)game.players.content[i];
         if (player->Id == playerId)
@@ -64,7 +65,8 @@ SpacePlayer_t *GetPlayerWithNetworkId(int playerId)
 
 SpacePlayer_t *GetPlayerWithId(int playerId)
 {
-	for (uint i = 0; i < game.players.size; i++)
+	uint i;
+	for (i = 0; i < game.players.size; i++)
 	{
 		SpacePlayer_t *player = (SpacePlayer_t*)game.players.content[i];
 		if (player->Id == playerId)

@@ -19,14 +19,12 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -85,15 +83,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="client_projectile.c" />
-    <ClCompile Include="main.c" />
-    <ClCompile Include="PlayerClient.c" />
+    <ClCompile Include="cl_projectile.c" />
+    <ClCompile Include="cl_main.c" />
+    <ClCompile Include="cl_player.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PlayerClient.h" />
+    <ClInclude Include="cl_player.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="client_projectile.h" />
+    <ClInclude Include="cl_projectile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

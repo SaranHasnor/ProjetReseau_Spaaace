@@ -1,4 +1,4 @@
-#include "projectile.h"
+#include "bg_projectile.h"
 
 #include <utils.h>
 #include <utils_vector.h>

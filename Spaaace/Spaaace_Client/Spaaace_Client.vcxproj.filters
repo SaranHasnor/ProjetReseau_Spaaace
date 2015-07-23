@@ -15,21 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.c">
+    <ClCompile Include="cl_projectile.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerClient.c">
-	  <Filter>Fichiers sources</Filter>
+    <ClCompile Include="cl_player.c">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="client_projectile.c">
+    <ClCompile Include="cl_main.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PlayerClient.h">
-	  <Filter>Fichiers d%27en-tête</Filter>
+    <ClInclude Include="cl_projectile.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="client_projectile.h">
+    <ClInclude Include="cl_player.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

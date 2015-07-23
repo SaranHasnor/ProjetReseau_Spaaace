@@ -1,4 +1,4 @@
-#include "Player.h"
+#include "bg_player.h"
 
 typedef union {
 	PlayerInput_t	input;

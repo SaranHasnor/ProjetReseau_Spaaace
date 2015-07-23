@@ -5,7 +5,7 @@
 
 #include <utils.h>
 
-#include "PlayerInput.h"
+#include "bg_input.h"
 
 typedef struct {
 	PlayerInput_t input;

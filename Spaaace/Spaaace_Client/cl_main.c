@@ -1,16 +1,11 @@
 #include <stdio.h>
-#include <engine.h>
-#include <engine_interface.h>
-//#include <engine_render.h>
-#include <engine_utils.h>
+
 #include <utils_matrix.h>
-#include <game.h>
-#include "PlayerClient.h"
-#include "client_projectile.h"
 #include <utils_time.h>
 
-#include "networkStruct.h"
-
+#include <engine.h>
+#include <engine_interface.h>
+#include <engine_utils.h>
 #include <GL/glut.h>
 
 #include <network_client.h>
@@ -18,6 +13,12 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <string.h>
+
+#include <bg_game.h>
+#include <bg_network.h>
+
+#include "cl_player.h"
+#include "cl_projectile.h"
 
 #define NB_STARS 1024
 #define RANGE_STARS 50.0f
@@ -183,7 +184,8 @@ void initEngine()
 
 void MessageListener(networkUpdate_t update)
 {
-    for (uint i = 0; i < update.count; i++)
+	uint i;
+    for (i = 0; i < update.count; i++)
     {
         printMessage(update.messages[i]);
         
@@ -280,6 +282,7 @@ void drawStars()
 
 void renderFunc(void)
 {
+	uint i;
 	float viewMatrix[16];
 
 	drawAxis();
@@ -288,14 +291,14 @@ void renderFunc(void)
 
 	drawStars();
 
-    for (uint i = 0; i < game.players.size; i++)
+    for (i = 0; i < game.players.size; i++)
     {
-        RenderPlayer(game.players.content[i],viewMatrix);
+        RenderPlayer((SpacePlayer_t*)game.players.content[i],viewMatrix);
     }
 	
-	for (uint i = 0; i < game.projectiles.size; i++)
+	for (i = 0; i < game.projectiles.size; i++)
 	{
-		drawProjectile(game.projectiles.content[i], viewMatrix);
+		drawProjectile((projectile_t*)game.projectiles.content[i], viewMatrix);
 	}
 }
 

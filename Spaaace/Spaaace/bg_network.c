@@ -1,4 +1,4 @@
-#include "networkStruct.h"
+#include "bg_network.h"
 
 void initNetworkStructWithPlayer(networkStruct_t *netStruct, SpacePlayer_t *player)
 {

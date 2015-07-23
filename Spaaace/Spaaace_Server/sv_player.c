@@ -1,4 +1,4 @@
-#include "PlayerServer.h"
+#include "sv_player.h"
 
 ServerPlayer_t* CreateNewPlayer(int senderId)
 {

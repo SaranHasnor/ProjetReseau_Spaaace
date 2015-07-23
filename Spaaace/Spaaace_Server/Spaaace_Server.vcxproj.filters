@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.c">
+    <ClCompile Include="sv_player.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerServer.c">
+    <ClCompile Include="sv_main.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PlayerServer.h">
+    <ClInclude Include="sv_player.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

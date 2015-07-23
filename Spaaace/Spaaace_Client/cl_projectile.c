@@ -1,4 +1,4 @@
-#include "client_projectile.h"
+#include "cl_projectile.h"
 
 #include <engine_render.h>
 #include <utils_matrix.h>

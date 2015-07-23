@@ -1,4 +1,4 @@
-#include "PlayerClient.h"
+#include "cl_player.h"
 
 #include <engine_render.h>
 #include <utils_matrix.h>

@@ -1,8 +1,8 @@
 #ifndef SPAAACE_DATA_IMPORTED
 #define SPAAACE_DATA_IMPORTED
 
-#include "Player.h"
-#include "projectile.h"
+#include "bg_player.h"
+#include "bg_projectile.h"
 #include <utils_list.h>
 
 typedef struct {

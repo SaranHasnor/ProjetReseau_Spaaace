@@ -1,16 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <game.h>
+#include <bg_game.h>
 #include <network_server.h>
 #include <string.h>
 #include <Windows.h>
-#include "PlayerServer.h"
-#include "networkStruct.h"
+#include "sv_player.h"
+#include <bg_network.h>
 #include <utils_time.h>
 
 void MessageListener(networkUpdate_t update)
 {
-    for (uint i = 0; i < update.count; i++)
+	uint i, j;
+    for (i = 0; i < update.count; i++)
     {
         printMessage(update.messages[i]);
 
@@ -23,11 +24,11 @@ void MessageListener(networkUpdate_t update)
 			bytestream_write(&player->connectionData, update.messages[i].content.data, update.messages[i].content.len);
 			player->connectionData.cursor = 0;
 
-			for (uint i = 0; i < game.players.size - 1; i++)
+			for (j = 0; j < game.players.size - 1; j++)
 			{ // Sync their player data with the new one
 				networkStruct_t net;
 				bytestream stream;
-				initNetworkStructWithPlayer(&net, game.players.content[i]);
+				initNetworkStructWithPlayer(&net, (SpacePlayer_t*)game.players.content[j]);
 				serializeNetworkStruct(&net, &stream);
 				SV_sendMessage(update.messages[i].senderID, stream);
 			}
