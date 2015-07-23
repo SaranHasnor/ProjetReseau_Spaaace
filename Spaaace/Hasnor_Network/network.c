@@ -254,6 +254,8 @@ void _closeConnection(networkConnection_t *connection, bool broadcast)
 	sendMessage(NETWORK_MESSAGE_EXIT, -1, broadcast ? -1 : connection->id, temp);
 
 	connection->id = 0;
+
+	// FIXME: Closing the socket here means this client won't receive his message
 	_cleanupSocket(&connection->socket);
 }
 

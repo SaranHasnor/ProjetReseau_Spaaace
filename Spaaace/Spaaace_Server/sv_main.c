@@ -8,12 +8,16 @@
 #include <bg_network.h>
 #include <utils_time.h>
 
+#pragma warning (disable:4996)	// Allow use of deprecated/unsafe functions (scanf...)
+
 void handleMessages(networkUpdate_t update)
 {
 	uint i, j;
     for (i = 0; i < update.count; i++)
     {
+#ifdef _DEBUG
         printMessage(update.messages[i]);
+#endif
 
 		if (update.messages[i].type == NETWORK_MESSAGE_CONNECT)
 		{
@@ -63,50 +67,62 @@ int main(int argc, char **argv)
     networkStatus_t status;
 	double lastTime = 0.0;
 	double lastBigUpdateTime = 0.0;
+	unsigned short port;
+
+	printf("Entrez le port d'ecoute: ");
+	scanf("%hu", &port);
 
     setupNetwork(1000, 10000);
-    SV_initServer(32, 4657, SOCKET_PROTOCOL_TCP, &status);
+    SV_initServer(32, port, SOCKET_PROTOCOL_TCP, &status);
 
 	time_init();
 
     if (status.error != NETWORK_ERROR_NONE)
+	{
         printError(status);
-
-    while (true)
-    {
-		double newTime = time_current_sec();
-		float deltaTime = (float)(newTime - lastTime);
-		float timeSinceLastBigUpdate = (float)(newTime - lastBigUpdateTime);
-
-        SV_checkForNewClients();
-        SV_update(&update);
-        if (update.count > 0)
-        {
-           handleMessages(update);
-        }
-
-		BG_gameLoop(deltaTime);
-		lastTime = newTime;
-
-		if (timeSinceLastBigUpdate >= 0.25f)
+	}
+	else
+	{
+		printf("Serveur actif sur le port %hu\n", port);
+		while (true)
 		{
-			uint i;
-			for (i = 0; i < game.players.size; i++)
+			double newTime = time_current_sec();
+			float deltaTime = (float)(newTime - lastTime);
+			float timeSinceLastBigUpdate = (float)(newTime - lastBigUpdateTime);
+
+			SV_checkForNewClients();
+			SV_update(&update);
+			if (update.count > 0)
 			{
-				networkStruct_t netStruct;
-				bytestream stream;
-				BG_initNetworkStructWithPlayer(&netStruct, *(player_t*)game.players.content[i]);
-				BG_serializeNetworkStruct(&netStruct, &stream);
-				SV_sendMessage(-1, stream);
+			   handleMessages(update);
 			}
 
-			timeSinceLastBigUpdate = (float)newTime;
+			BG_gameLoop(deltaTime);
+			lastTime = newTime;
+
+			if (timeSinceLastBigUpdate >= 0.25f)
+			{
+				uint i;
+				for (i = 0; i < game.players.size; i++)
+				{
+					networkStruct_t netStruct;
+					bytestream stream;
+					BG_initNetworkStructWithPlayer(&netStruct, *(player_t*)game.players.content[i]);
+					BG_serializeNetworkStruct(&netStruct, &stream);
+					SV_sendMessage(-1, stream);
+					bytestream_destroy(&stream);
+				}
+
+				timeSinceLastBigUpdate = (float)newTime;
+			}
+
+			Sleep(10);
 		}
 
-		Sleep(10);
-    }
+		SV_closeServer(&status);
+	}
 
-    SV_closeServer(&status);
+	shutdownNetwork();
 
 	return 0;
 }

@@ -20,9 +20,12 @@
 #include "cl_player.h"
 #include "cl_projectile.h"
 
+#pragma warning (disable:4996)	// Allow use of deprecated/unsafe functions (sprintf...)
+
 #define NB_STARS 1024
 
 player_t *myPlayer = NULL;
+char *healthString = NULL;
 
 mesh_t *_skybox = NULL;
 float _stars[NB_STARS][3];
@@ -31,6 +34,7 @@ void keyDownFunc(uchar key)
 {
 	if (key == 27) // Escape
 	{
+		CL_disconnectFromServer(NULL);
 		engine_shutdown();
 	}
 	else if (myPlayer)
@@ -210,16 +214,33 @@ void createSkybox()
 	updateMeshGeometry(_skybox);
 }
 
-void initEngine()
+void showLoginInterface();
+void disconnectFromServer(void)
 {
 	uint i;
-    bytestream stream;
-    networkStatus_t status;
+	CL_disconnectFromServer(NULL);
+	
+	for (i = 0; i < game.players.size; i++)
+	{ // Clunkiest loop I've ever made, but it does the job
+		mem_free(game.players.content[i]);
+		list_removeAt(&game.players, i--);
+	}
 
-    list_init(&game.players);
-    list_init(&game.projectiles);
+	for (i = 0; i < game.projectiles.size; i++)
+	{
+		mem_free(game.projectiles.content[i]);
+		list_removeAt(&game.projectiles, i--);
+	}
 
-	//UI
+	myPlayer = NULL;
+
+	showLoginInterface();
+}
+
+void showGameplayInterface()
+{
+	interface_deleteAllObjects();
+
 	interface_pushBlock(relativePlacement(0.48f, 0.48f, 0.04f, 0.04f));
 	interface_staticLabel("--", relativePlacement(0, 1, 1, 1), ANCHOR_CENTER);
 	interface_staticLabel("--", relativePlacement(0, -1, 1, 1), ANCHOR_CENTER);
@@ -227,7 +248,21 @@ void initEngine()
 	interface_staticLabel("|", relativePlacement(1, 0, 1, 1), ANCHOR_CENTER);
 	interface_staticLabel("|", relativePlacement(-1, 0, 1, 1), ANCHOR_CENTER);
 	interface_popBlock();
+
+	interface_dynamicLabel(&healthString, relativePlacement(0.0f, 0.8f, 1.0f, 0.2f), ANCHOR_CENTER);
+
+	interface_staticButton("Deconnexion", relativePlacement(0.8f, 0.0f, 0.2f, 0.1f), disconnectFromServer);
+
 	interface_updateLayout();
+}
+
+void initEngine()
+{
+	uint i;
+
+	healthString = (char*)mem_alloc(sizeof(char) * 64);
+
+	showGameplayInterface();
 
 	createSkybox();
     createProjectileMesh();
@@ -239,11 +274,63 @@ void initEngine()
 		vectorNormalize(_stars[i]);
 		vectorScale(_stars[i], 100.0f, _stars[i]);
 	}
+}
 
-    bytestream_init(&stream, 0);
-    CL_connectToServer("127.0.0.1", 4657, stream, SOCKET_PROTOCOL_TCP, &status);
-    if (status.error != NETWORK_ERROR_NONE)
-        printError(status);
+char *address = NULL;
+int *port = NULL;
+void connect(void)
+{
+	networkStatus_t status;
+	bytestream clientInfo;
+	bytestream_init(&clientInfo, 0);
+
+	CL_connectToServer(address, (unsigned short)*port, clientInfo, SOCKET_PROTOCOL_TCP, &status);
+
+	bytestream_destroy(&clientInfo);
+
+	if (status.error == NETWORK_ERROR_NONE)
+	{ // Success
+		initEngine();
+	}
+	else
+	{
+		printError(status);
+	}
+}
+
+void showLoginInterface()
+{
+	uint curObj;
+
+	interface_deleteAllObjects();
+
+	if (!address)
+	{
+		address = (char*)mem_alloc(sizeof(char) * 16);
+		strcpy(address, "127.0.0.1");
+	}
+	if (!port)
+	{
+		port = (int*)mem_alloc(sizeof(int));
+		*port = 5875;
+	}
+
+	interface_pushBlock(relativePlacement(0.25f, 0.25f, 0.5f, 0.5f));
+
+	curObj = interface_textField(relativePlacement(0.0f, 0.2f, 1.0f, 0.2f), FIELDTYPE_TEXT);
+	interface_setTextFieldValue(curObj, 0.0f, 15.0f, (void**)&address, true);
+	curObj = interface_textField(relativePlacement(0.0f, 0.6f, 1.0f, 0.2f), FIELDTYPE_INT);
+	interface_setTextFieldValue(curObj, 0.0f, 65535.0f, (void**)&port, true);
+
+	interface_staticLabel("Addresse:", relativePlacement(0.0f, 0.0f, 1.0f, 0.2f), ANCHOR_CENTER);
+
+	interface_staticLabel("Port:", relativePlacement(0.0f, 0.4f, 1.0f, 0.2f), ANCHOR_CENTER);
+
+	interface_staticButton("Connexion", relativePlacement(0.0f, 0.8f, 1.0f, 0.2f), connect);
+
+	interface_popBlock();
+
+	interface_updateLayout();
 }
 
 void handleMessages(networkUpdate_t update)
@@ -290,16 +377,23 @@ void handleMessages(networkUpdate_t update)
 				}
 			}
 
-			if (player != myPlayer)
-			{ // TODO: If it's us, make this change smoother. Disabling it for now
-				if (net.inputOnly)
-				{
-					player->input = net.content.input;
+			if (!net.inputOnly)
+			{
+				if (player == myPlayer)
+				{ // Only take the server's data if it differs greatly from ours
+					if (vectorDistance(myPlayer->pos, net.content.player.pos) > 2.0f)
+					{
+						*player = net.content.player;
+					}
 				}
 				else
 				{
 					*player = net.content.player;
 				}
+			}
+			else if (player != myPlayer)
+			{
+				player->input = net.content.input;
 			}
         }
 		else if (update.messages[i].type == NETWORK_MESSAGE_EXIT)
@@ -319,13 +413,13 @@ void updateFunc(timeStruct_t time, inputStruct_t input)
 
 	if (time.deltaTime == time.currentTime)
 	{
-		initEngine();
+		showLoginInterface();
 		time_sync(time.currentTime);
 	}
 
-    updateCamera(input);
-
     BG_gameLoop(time.deltaTimeSeconds);
+
+    updateCamera(input);
 
     if (CL_connected())
     {
@@ -340,6 +434,8 @@ void updateFunc(timeStruct_t time, inputStruct_t input)
             BG_serializeNetworkStruct(&netStruct, &stream);
 
             CL_sendMessage(-1, stream);
+
+			sprintf(healthString, "Health: %d", myPlayer->health);
 
 			if (myPlayer->health == 0)
 			{ // That's... extreme?
@@ -379,18 +475,21 @@ void renderFunc(void)
 
 	engine_getViewMatrix(viewMatrix);
 
-	renderMesh(_skybox, viewMatrix);
-
-	drawStars();
-
-    for (i = 0; i < game.players.size; i++)
-    {
-        renderPlayer((player_t*)game.players.content[i],viewMatrix);
-    }
-	
-	for (i = 0; i < game.projectiles.size; i++)
+	if (CL_connected())
 	{
-		drawProjectile((projectile_t*)game.projectiles.content[i], viewMatrix);
+		renderMesh(_skybox, viewMatrix);
+
+		drawStars();
+
+		for (i = 0; i < game.players.size; i++)
+		{
+			renderPlayer((player_t*)game.players.content[i],viewMatrix);
+		}
+	
+		for (i = 0; i < game.projectiles.size; i++)
+		{
+			drawProjectile((projectile_t*)game.projectiles.content[i], viewMatrix);
+		}
 	}
 }
 
