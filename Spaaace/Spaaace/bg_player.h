@@ -8,22 +8,22 @@
 #include "bg_input.h"
 
 typedef struct {
-	PlayerInput_t input;
+	playerInput_t	input;
 
-    int Id;
-    float Position[3];
-    float Velocity[3];
-	float Angles[3];
-    float Life;
-    int Death;
-    int Kill;
-} SpacePlayer_t;
+    int				id;
 
-void InitPlayer(SpacePlayer_t *player, int id);
-void SetPlayerPosition(SpacePlayer_t* player, float position[3]);
-bool PlayerTakeDamage(SpacePlayer_t* Player, float AttackValue);
-void UpdatePlayer(SpacePlayer_t* Player, float deltaTime);
-void Player_Serialize(SpacePlayer_t player, bytestream* stream);
-void Player_Deserialize(bytestream stream, SpacePlayer_t *out);
+    float			pos[3];
+    float			vel[3];
+	float			ang[3];
+
+    uint			health;
+    int				score;
+} player_t;
+
+void BG_initPlayer(player_t *player, int id);
+void BG_playerTakeDamage(player_t *player, uint damage);
+void BG_updatePlayer(player_t *player, float deltaTime);
+void BG_serializePlayer(player_t *in, bytestream *out);
+void BG_deserializePlayer(bytestream *in, player_t *out);
 
 #endif

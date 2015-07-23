@@ -2,85 +2,80 @@
 
 #include <utils_vector.h>
 
-float MaxLife = 100;
+const int _maxHealth = 100;
 
-void ChangeMaxLife(float maxLife)
+void BG_initPlayer(player_t *player, int id)
 {
-    MaxLife = maxLife;
+    mem_set(player, 0, sizeof(player_t));
+
+	player->id = id;
+	player->health = _maxHealth;
 }
 
-void InitPlayer(SpacePlayer_t *player, int id)
+void BG_playerTakeDamage(player_t *player, uint damage)
 {
-	player->Id = id;
-	vectorCopy(player->Position, nullVec);
-	vectorCopy(player->Velocity, nullVec);
-	vectorCopy(player->Angles, nullVec);
-	player->Life = MaxLife;
-	player->Kill = 0;
-	player->Death = 0;
-    mem_set(&player->input, 0, sizeof(PlayerInput_t));
+	if (damage > player->health)
+	{
+		player->health = 0;
+	}
+	else
+	{
+		player->health -= damage;
+	}
 }
 
-void SetPlayerPosition(SpacePlayer_t* Player, float Position[3])
-{
-	vectorCopy(Player->Position, Position);
-}
-
-bool PlayerTakeDamage(SpacePlayer_t* Player, float AttackValue)
-{ // Returns true if the player is still alive
-    Player->Life -= AttackValue;
-    return Player->Life < 1;
-}
-
-void UpdatePlayer(SpacePlayer_t* Player, float deltaTime)
+void BG_updatePlayer(player_t *player, float deltaTime)
 {
     float velocity[3] = { 0, 0, 0 };
 	float forward[3], right[3];
-    if (Player->input.UpButton)
+
+	// First read his input
+    if (player->input.forward)
     {
         velocity[1] += 1;
     }
 
-    if (Player->input.DownButton)
+    if (player->input.back)
     {
         velocity[1] -= 1;
     }
 
-    if (Player->input.RightButton)
+    if (player->input.right)
     {
         velocity[0] += 1;
     }
 
-    if (Player->input.LeftButton)
+    if (player->input.left)
     {
         velocity[0] -= 1;
     }
 
-    if (Player->input.UpperButton)
+    if (player->input.up)
     {
          velocity[2] += 1;
     }
 
-    if (Player->input.DownerButton)
+    if (player->input.down)
     {
         velocity[2] -= 1;
     }
 
-	AngleVectors(Player->Angles, forward, right, NULL);
+	// Now map his movement to his local axis (except for the Z axis)
+	AngleVectors(player->ang, forward, right, NULL);
+	vectorScale(player->vel, velocity[2], axis[2]);
+	vectorMA(player->vel, player->vel, velocity[1], forward);
+	vectorMA(player->vel, player->vel, velocity[0], right);
 
-	vectorScale(Player->Velocity, velocity[2], axis[2]);
-	vectorMA(Player->Velocity, Player->Velocity, velocity[1], forward);
-	vectorMA(Player->Velocity, Player->Velocity, velocity[0], right);
-
-	vectorMA(Player->Position, Player->Position, deltaTime, Player->Velocity);
+	// And finally move him
+	vectorMA(player->pos, player->pos, deltaTime, player->vel);
 }
 
-void Player_Serialize(SpacePlayer_t player, bytestream* stream)
+void BG_serializePlayer(player_t *in, bytestream* out)
 {
-    bytestream_write(stream, (byte*)&player, sizeof(SpacePlayer_t));
+    bytestream_write(out, (byte*)in, sizeof(player_t));
 }
 
-void Player_Deserialize(bytestream stream, SpacePlayer_t *out)
+void BG_deserializePlayer(bytestream *in, player_t *out)
 {
-    bytestream_read(&stream, (byte*)out, sizeof(SpacePlayer_t));
+    bytestream_read(in, (byte*)out, sizeof(player_t));
 }

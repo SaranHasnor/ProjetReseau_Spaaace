@@ -5,17 +5,17 @@
 #include <utils.h>
 #include <utils_bytestream.h>
 
-typedef struct{
-    bool UpButton;
-    bool DownButton;
-    bool LeftButton;
-    bool RightButton;
-    bool UpperButton;
-    bool DownerButton;
-    bool AttackButton;
-}PlayerInput_t;
+typedef struct {
+    bool forward;
+    bool back;
+    bool left;
+    bool right;
+    bool up;
+    bool down;
+    bool attack;
+} playerInput_t;
 
-void PlayerInput_Serialize(PlayerInput_t playerInput, bytestream* stream);
-void PlayerInput_Deserialize(bytestream stream, PlayerInput_t* playerInput);
+void BG_serializePlayerInput(playerInput_t *in, bytestream *out);
+void BG_deserializePlayerInput(bytestream *in, playerInput_t *out);
 
 #endif

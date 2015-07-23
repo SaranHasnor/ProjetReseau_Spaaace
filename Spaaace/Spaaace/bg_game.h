@@ -12,9 +12,8 @@ typedef struct {
 
 extern gamedata_t game;
 
-void updateGame(float deltaTime);
+void BG_gameLoop(float deltaTime);
 
-
-SpacePlayer_t *GetPlayerWithId(int playerId);
+player_t *BG_getPlayerWithID(int playerId);
 
 #endif

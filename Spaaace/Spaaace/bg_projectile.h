@@ -9,10 +9,10 @@ typedef struct {
 
 	float	*target[3];
 
-	float		damage;
+	int		damage;
 } projectile_t;
 
 
-projectile_t *newProjectile(int ownerID, float damage);
-float projectileDistanceToPoint(projectile_t *projectile, float pos[3]);
-void updateProjectile(projectile_t *projectile, float deltaTime);
+projectile_t *BG_newProjectile(int ownerID, int damage);
+float BG_projectileDistanceToPoint(projectile_t *projectile, float pos[3]);
+void BG_updateProjectile(projectile_t *projectile, float deltaTime);

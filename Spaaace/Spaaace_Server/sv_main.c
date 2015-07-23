@@ -8,7 +8,7 @@
 #include <bg_network.h>
 #include <utils_time.h>
 
-void MessageListener(networkUpdate_t update)
+void handleMessages(networkUpdate_t update)
 {
 	uint i, j;
     for (i = 0; i < update.count; i++)
@@ -17,7 +17,7 @@ void MessageListener(networkUpdate_t update)
 
 		if (update.messages[i].type == NETWORK_MESSAGE_CONNECT)
 		{
-			ServerPlayer_t *player = CreateNewPlayer(update.messages[i].senderID);
+			serverPlayer_t *player = createNewPlayer(update.messages[i].senderID);
 			list_add(&game.players, player);
 			
 			bytestream_init(&player->connectionData, update.messages[i].content.len);
@@ -28,16 +28,16 @@ void MessageListener(networkUpdate_t update)
 			{ // Sync their player data with the new one
 				networkStruct_t net;
 				bytestream stream;
-				initNetworkStructWithPlayer(&net, (SpacePlayer_t*)game.players.content[j]);
-				serializeNetworkStruct(&net, &stream);
+				BG_initNetworkStructWithPlayer(&net, ((serverPlayer_t*)game.players.content[j])->BasePlayer);
+				BG_serializeNetworkStruct(&net, &stream);
 				SV_sendMessage(update.messages[i].senderID, stream);
 			}
 		}
 		else if (update.messages[i].type == NETWORK_MESSAGE_CUSTOM)
 		{ // Update
 			networkStruct_t net;
-			SpacePlayer_t *player = GetPlayerWithId(update.messages[i].senderID);
-			deserializeNetworkStruct(&update.messages[i].content, &net);
+			player_t *player = BG_getPlayerWithID(update.messages[i].senderID);
+			BG_deserializeNetworkStruct(&update.messages[i].content, &net);
 
 			if (net.inputOnly)
 			{
@@ -78,10 +78,10 @@ int main(int argc, char **argv)
         SV_update(&update);
         if (update.count > 0)
         {
-           MessageListener(update);
+           handleMessages(update);
         }
 
-		updateGame(deltaTime);
+		BG_gameLoop(deltaTime);
 
 		Sleep(10);
     }

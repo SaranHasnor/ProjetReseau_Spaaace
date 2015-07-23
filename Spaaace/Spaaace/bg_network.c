@@ -1,40 +1,40 @@
 #include "bg_network.h"
 
-void initNetworkStructWithPlayer(networkStruct_t *netStruct, SpacePlayer_t *player)
+void BG_initNetworkStructWithPlayer(networkStruct_t *netStruct, player_t player)
 {
 	netStruct->inputOnly = false;
-	netStruct->content.player = *player;
+	netStruct->content.player = player;
 }
 
-void initNetworkStructWithPlayerInput(networkStruct_t *netStruct, PlayerInput_t input)
+void BG_initNetworkStructWithPlayerInput(networkStruct_t *netStruct, playerInput_t input)
 {
 	netStruct->inputOnly = true;
 	netStruct->content.input = input;
 }
 
-void serializeNetworkStruct(networkStruct_t *netStruct, bytestream *stream)
+void BG_serializeNetworkStruct(networkStruct_t *in, bytestream *out)
 {
-	bytestream_init(stream, sizeof(bool) + (netStruct->inputOnly ? sizeof(PlayerInput_t) : sizeof(SpacePlayer_t)));
-	bytestream_write(stream, (byte*)&netStruct->inputOnly, sizeof(bool));
-	if (netStruct->inputOnly)
+	bytestream_init(out, sizeof(bool) + (in->inputOnly ? sizeof(playerInput_t) : sizeof(player_t)));
+	bytestream_write(out, (byte*)&in->inputOnly, sizeof(bool));
+	if (in->inputOnly)
 	{
-		PlayerInput_Serialize(netStruct->content.input, stream);
+		BG_serializePlayerInput(&in->content.input, out);
 	}
 	else
 	{
-		Player_Serialize(netStruct->content.player, stream);
+		BG_serializePlayer(&in->content.player, out);
 	}
 }
 
-void deserializeNetworkStruct(bytestream *stream, networkStruct_t *netStruct)
+void BG_deserializeNetworkStruct(bytestream *in, networkStruct_t *out)
 {
-	bytestream_read(stream, (byte*)&netStruct->inputOnly, sizeof(bool));
-	if (netStruct->inputOnly)
+	bytestream_read(in, (byte*)&out->inputOnly, sizeof(bool));
+	if (out->inputOnly)
 	{
-		PlayerInput_Deserialize(*stream, &netStruct->content.input);
+		BG_deserializePlayerInput(in, &out->content.input);
 	}
 	else
 	{
-		Player_Deserialize(*stream, &netStruct->content.player);
+		BG_deserializePlayer(in, &out->content.player);
 	}
 }

@@ -8,12 +8,10 @@
 
 typedef enum { UpButton, DownButton, LeftButton, RightButton, UpperButton, DownerButton, AttackButton } InputValue;
 
-SpacePlayer_t* myPlayer;
+extern player_t *myPlayer;
 
-void CreatePlayerMesh();
-void RenderPlayer(SpacePlayer_t* player, float viewMatrix[16]);
-SpacePlayer_t* CreateNewPlayer(int id);
-
-void ChangeMyPlayerInput(InputValue value, bool buttonState);
+void createPlayerMesh();
+void renderPlayer(player_t* player, float viewMatrix[16]);
+player_t* createNewPlayer(int id);
 
 #endif

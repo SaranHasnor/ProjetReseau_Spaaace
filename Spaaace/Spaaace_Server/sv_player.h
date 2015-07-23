@@ -9,11 +9,11 @@
 #include <network_server.h>
 
 typedef struct {
-	SpacePlayer_t BasePlayer;
+	player_t BasePlayer;
 
 	bytestream connectionData;
-} ServerPlayer_t;
+} serverPlayer_t;
 
-ServerPlayer_t *CreateNewPlayer(int senderId);
+serverPlayer_t *createNewPlayer(int id);
 
 #endif

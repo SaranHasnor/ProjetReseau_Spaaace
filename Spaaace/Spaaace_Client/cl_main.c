@@ -21,7 +21,8 @@
 #include "cl_projectile.h"
 
 #define NB_STARS 1024
-#define RANGE_STARS 50.0f
+
+player_t *myPlayer = NULL;
 
 float _stars[NB_STARS][3];
 
@@ -31,25 +32,87 @@ void keyDownFunc(uchar key)
 	{
 		engine_shutdown();
 	}
+	else if (myPlayer)
+	{
+		if (key == 'z')
+		{
+			myPlayer->input.forward = true;
+		}
+		else if (key == 's')
+		{
+			myPlayer->input.back = true;
+		}
+		else if (key == 'd')
+		{
+			myPlayer->input.right = true;
+		}
+		else if (key == 'q')
+		{
+			myPlayer->input.left = true;
+		}
+		else if (key == ' ')
+		{
+			myPlayer->input.up = true;
+		}
+		else if (key == 'x')
+		{
+			myPlayer->input.down = true;
+		}
+	}
 }
 
 void keyUpFunc(uchar key)
 {
-
+	if (myPlayer)
+	{
+		if (key == 'z')
+		{
+			myPlayer->input.forward = false;
+		}
+		else if (key == 's')
+		{
+			myPlayer->input.back = false;
+		}
+		else if (key == 'd')
+		{
+			myPlayer->input.right = false;
+		}
+		else if (key == 'q')
+		{
+			myPlayer->input.left = false;
+		}
+		else if (key == ' ')
+		{
+			myPlayer->input.up = false;
+		}
+		else if (key == 'x')
+		{
+			myPlayer->input.down = false;
+		}
+	}
 }
 
 void mouseDownFunc(ushort button, int x, int y)
 {
-    if (button == INPUT_MOUSELEFT_BUTTON)
-        ChangeMyPlayerInput(AttackButton, true);
+	if (myPlayer)
+	{
+		if (button == INPUT_MOUSELEFT_BUTTON)
+		{
+			myPlayer->input.attack = true;
+		}
+	}
 }
 
 void mouseUpFunc(ushort button, int x, int y)
 {
-    if (button == INPUT_MOUSELEFT_BUTTON)
-        ChangeMyPlayerInput(AttackButton, false);
+	if (myPlayer)
+	{
+		if (button == INPUT_MOUSELEFT_BUTTON)
+		{
+			myPlayer->input.attack = false;
+		}
+	}
 }
-
 
 void updateCamera(inputStruct_t input)
 {
@@ -60,83 +123,28 @@ void updateCamera(inputStruct_t input)
 
 	if (input.mouseButtons & INPUT_MOUSERIGHT)
 	{
-		float angle[3];
+		float rotation[3];
 
-		angle[0] = (float)input.mouseDelta[1];
-		angle[1] = -(float)input.mouseDelta[0];
-		angle[2] = 0;
-		vectorAdd(myPlayer->Angles, myPlayer->Angles, angle);
+		rotation[0] = (float)input.mouseDelta[1];
+		rotation[1] = -(float)input.mouseDelta[0];
+		rotation[2] = 0;
+		
+		vectorAdd(myPlayer->ang, myPlayer->ang, rotation);
 
-		if (myPlayer->Angles[0] < -85)
-			myPlayer->Angles[0] = -85;
-		if (myPlayer->Angles[0] > 85)
-			myPlayer->Angles[0] = 85;
+		if (myPlayer->ang[0] < -85)
+			myPlayer->ang[0] = -85;
+		if (myPlayer->ang[0] > 85)
+			myPlayer->ang[0] = 85;
 
-		if (myPlayer->Angles[1] < -180)
-			myPlayer->Angles[1] += 360;
-		if (myPlayer->Angles[1] > 180)
-			myPlayer->Angles[1] -= 360;
+		if (myPlayer->ang[1] < -180)
+			myPlayer->ang[1] += 360;
+		if (myPlayer->ang[1] > 180)
+			myPlayer->ang[1] -= 360;
 	}
 
-	if (input.key_timeHeld('z') > 0)
-	{
-        ChangeMyPlayerInput(UpButton, true);
-    }
-    else
-    {
-        ChangeMyPlayerInput(UpButton, false);
-    }
-
-	if (input.key_timeHeld('s') > 0)
-	{
-        ChangeMyPlayerInput(DownButton, true);
-	}
-    else
-    {
-        ChangeMyPlayerInput(DownButton, false);
-    }
-
-	if (input.key_timeHeld('d') > 0)
-	{
-        ChangeMyPlayerInput(RightButton, true);
-	}
-    else
-    {
-        ChangeMyPlayerInput(RightButton, false);
-    }
-
-	if (input.key_timeHeld('q') > 0)
-	{
-        ChangeMyPlayerInput(LeftButton, true);
-	}
-    else
-    {
-        ChangeMyPlayerInput(LeftButton, false);
-    }
-
-	if (input.key_timeHeld(' ') > 0)
-	{
-        ChangeMyPlayerInput(UpperButton, true);
-	}
-    else
-    {
-        ChangeMyPlayerInput(UpperButton, false);
-    }
-
-	if (input.key_timeHeld('x') > 0)
-	{
-        ChangeMyPlayerInput(DownerButton, true);
-	}
-    else
-    {
-        ChangeMyPlayerInput(DownerButton, false);
-    }
-
-	engine_setCameraPosition(myPlayer->Position);
-	engine_setCameraAngles(myPlayer->Angles);
+	engine_setCameraPosition(myPlayer->pos);
+	engine_setCameraAngles(myPlayer->ang);
 }
-
-char* myRandomString = NULL;
 
 void initEngine()
 {
@@ -148,72 +156,66 @@ void initEngine()
     list_init(&game.projectiles);
 
 	//UI
-	/*interface_pushBlock(relativePlacement(0.48f, 0.48f, 0.04f, 0.04f));
+	interface_pushBlock(relativePlacement(0.48f, 0.48f, 0.04f, 0.04f));
 	interface_staticLabel("--", relativePlacement(0, 1, 1, 1), ANCHOR_CENTER);
 	interface_staticLabel("--", relativePlacement(0, -1, 1, 1), ANCHOR_CENTER);
 	interface_staticLabel("+", relativePlacement(0, 0, 1, 1), ANCHOR_CENTER);
 	interface_staticLabel("|", relativePlacement(1, 0, 1, 1), ANCHOR_CENTER);
 	interface_staticLabel("|", relativePlacement(-1, 0, 1, 1), ANCHOR_CENTER);
 	interface_popBlock();
-	interface_updateLayout();*/
+	interface_updateLayout();
 
 	setupNetwork();
 
     createProjectileMesh();
-    CreatePlayerMesh();
+    createPlayerMesh();
 
 	for (i = 0; i < NB_STARS; i++)
 	{
-        vectorSet(_stars[i], randomValueBetween(-RANGE_STARS, RANGE_STARS), randomValueBetween(-RANGE_STARS, RANGE_STARS), randomValueBetween(-RANGE_STARS, RANGE_STARS));
+        vectorSet(_stars[i], randomValueBetween(-1.0f, 1.0f), randomValueBetween(-1.0f, 1.0f), randomValueBetween(-1.0f, 1.0f));
 		vectorNormalize(_stars[i]);
 		vectorScale(_stars[i], 100.0f, _stars[i]);
 	}
 
-    bytestream_init(&stream, 16);
-	myRandomString = (char*)mem_alloc(sizeof(char)* 16);
-	for (i = 0; i < 16; i++)
-	{
-		myRandomString[i] = (char)randomIntBetween(0, 255);
-	}
-	bytestream_write(&stream, myRandomString, sizeof(char) * 16);
-
-    CL_connectToServer("10.33.2.72", 4657, stream, SOCKET_PROTOCOL_TCP, &status);
+    bytestream_init(&stream, 0);
+    CL_connectToServer("127.0.0.1", 4657, stream, SOCKET_PROTOCOL_TCP, &status);
     if (status.error != NETWORK_ERROR_NONE)
         printError(status);
 }
 
-void MessageListener(networkUpdate_t update)
+void handleMessages(networkUpdate_t update)
 {
 	uint i;
     for (i = 0; i < update.count; i++)
     {
+#ifdef _DEBUG
         printMessage(update.messages[i]);
+#endif
         
         if (update.messages[i].type == NETWORK_MESSAGE_CONNECT)
         {
-			SpacePlayer_t *player = CreateNewPlayer(update.messages[i].senderID);
+			player_t *player = createNewPlayer(update.messages[i].senderID);
 			list_add(&game.players, player);
 
-			if (!myPlayer && myRandomString && !strcmp(myRandomString, update.messages[i].content.data))
-			{ // That's me!
+			if (!myPlayer)
+			{ // That's me! Hopefully...
 				myPlayer = player;
 			}
         }
 		else if (update.messages[i].type == NETWORK_MESSAGE_CUSTOM)
         { // Update
 			networkStruct_t net;
-			SpacePlayer_t *player = GetPlayerWithId(update.messages[i].senderID);
+			player_t *player = BG_getPlayerWithID(update.messages[i].senderID);
 
 			if (player != myPlayer)
 			{
 				if (!player)
 				{
-					player = CreateNewPlayer(update.messages[i].senderID);
-					player->Id = i;
+					player = createNewPlayer(update.messages[i].senderID);
 					list_add(&game.players, player);
 				}
 
-				deserializeNetworkStruct(&update.messages[i].content, &net);
+				BG_deserializeNetworkStruct(&update.messages[i].content, &net);
 
 				if (net.inputOnly)
 				{
@@ -227,7 +229,7 @@ void MessageListener(networkUpdate_t update)
         }
 		else if (update.messages[i].type == NETWORK_MESSAGE_EXIT)
 		{
-			SpacePlayer_t *player = GetPlayerWithId(update.messages[i].senderID);
+			player_t *player = BG_getPlayerWithID(update.messages[i].senderID);
 			list_remove(&game.players, player);
 			mem_free(player);
 		}
@@ -248,19 +250,19 @@ void updateFunc(timeStruct_t time, inputStruct_t input)
 
     updateCamera(input);
 
-    updateGame(time.deltaTimeSeconds);
+    BG_gameLoop(time.deltaTimeSeconds);
 
     if (CL_connected())
     {
         CL_update(&update);
         if (update.count > 0)
         {
-            MessageListener(update);
+            handleMessages(update);
         }
         if (myPlayer != NULL)
         {
-            initNetworkStructWithPlayer(&netStruct, myPlayer);
-            serializeNetworkStruct(&netStruct, &stream);
+            BG_initNetworkStructWithPlayerInput(&netStruct, myPlayer->input);
+            BG_serializeNetworkStruct(&netStruct, &stream);
 
             CL_sendMessage(-1, stream);
         }
@@ -293,7 +295,7 @@ void renderFunc(void)
 
     for (i = 0; i < game.players.size; i++)
     {
-        RenderPlayer((SpacePlayer_t*)game.players.content[i],viewMatrix);
+        renderPlayer((player_t*)game.players.content[i],viewMatrix);
     }
 	
 	for (i = 0; i < game.projectiles.size; i++)

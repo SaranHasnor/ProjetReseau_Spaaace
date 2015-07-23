@@ -1,10 +1,10 @@
 #include "sv_player.h"
 
-ServerPlayer_t* CreateNewPlayer(int senderId)
+serverPlayer_t *createNewPlayer(int id)
 {
-    ServerPlayer_t *serverPlayer = (ServerPlayer_t*)mem_alloc(sizeof(ServerPlayer_t));
+    serverPlayer_t *serverPlayer = (serverPlayer_t*)mem_alloc(sizeof(serverPlayer_t));
 
-	InitPlayer(&serverPlayer->BasePlayer, senderId);
+	BG_initPlayer(&serverPlayer->BasePlayer, id);
 
 	return serverPlayer;
 }

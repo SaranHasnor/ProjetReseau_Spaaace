@@ -4,7 +4,7 @@
 #include <utils_vector.h>
 
 
-projectile_t *newProjectile(int ownerID, float damage)
+projectile_t *BG_newProjectile(int ownerID, int damage)
 {
 	projectile_t *proj = (projectile_t*)mem_alloc(sizeof(projectile_t));
 	mem_set(proj, 0, sizeof(projectile_t));
@@ -13,12 +13,12 @@ projectile_t *newProjectile(int ownerID, float damage)
 	return proj;
 }
 
-float projectileDistanceToPoint(projectile_t *projectile, float pos[3])
+float BG_projectileDistanceToPoint(projectile_t *projectile, float pos[3])
 {
 	return vectorDistance(projectile->pos, pos);
 }
 
-void updateProjectile(projectile_t *projectile, float deltaTime)
+void BG_updateProjectile(projectile_t *projectile, float deltaTime)
 {
 	float velNorm[3];
 	float speed;

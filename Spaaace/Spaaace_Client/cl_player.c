@@ -3,9 +3,9 @@
 #include <engine_render.h>
 #include <utils_matrix.h>
 
-mesh_t* playerMesh;
+mesh_t *playerMesh;
 
-void CreatePlayerMesh()
+void createPlayerMesh()
 {
     face_t *tempFace;
 
@@ -27,49 +27,21 @@ void CreatePlayerMesh()
     updateMeshGeometry(playerMesh);
 }
 
-void RenderPlayer(SpacePlayer_t* player, float viewMatrix[16])
+void renderPlayer(player_t *player, float viewMatrix[16])
 {
-    vectorCopy(playerMesh->origin, player->Position);
+    vectorCopy(playerMesh->origin, player->pos);
 	mat_rotation(playerMesh->rotation,
-		-player->Angles[0],
-		player->Angles[1] - 90,
-		player->Angles[2],
+		-player->ang[0],
+		player->ang[1] - 90,
+		player->ang[2],
 		true);
     
 	renderMesh(playerMesh, viewMatrix);
 }
 
-SpacePlayer_t* CreateNewPlayer(int id)
+player_t *createNewPlayer(int id)
 {
-    SpacePlayer_t *player = (SpacePlayer_t*)mem_alloc(sizeof(SpacePlayer_t));
-	InitPlayer(player, id);
+    player_t *player = (player_t*)mem_alloc(sizeof(player_t));
+	BG_initPlayer(player, id);
     return player;
-}
-
-void ChangeMyPlayerInput(InputValue value, bool buttonState)
-{
-    switch (value)
-    {
-        case UpButton:
-            myPlayer->input.UpButton = buttonState;
-            break;
-        case DownButton:
-            myPlayer->input.DownButton = buttonState;
-            break;
-        case LeftButton:
-            myPlayer->input.LeftButton = buttonState;
-            break;
-        case RightButton:
-            myPlayer->input.RightButton = buttonState;
-            break;
-        case UpperButton:
-            myPlayer->input.UpperButton = buttonState;
-            break;
-        case DownerButton:
-            myPlayer->input.DownerButton = buttonState;
-            break;
-        case AttackButton:
-            myPlayer->input.AttackButton = buttonState;
-            break;
-    }
 }

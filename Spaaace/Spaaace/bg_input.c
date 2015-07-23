@@ -1,12 +1,12 @@
 #include "bg_input.h"
 
 
-void PlayerInput_Serialize(PlayerInput_t playerInput, bytestream* stream)
+void BG_serializePlayerInput(playerInput_t *in, bytestream *out)
 {
-    bytestream_write(stream, (byte*)&playerInput, sizeof(PlayerInput_t));
+    bytestream_write(out, (byte*)in, sizeof(playerInput_t));
 }
 
-void PlayerInput_Deserialize(bytestream stream, PlayerInput_t* playerInput)
+void BG_deserializePlayerInput(bytestream *in, playerInput_t *out)
 {
-    bytestream_read(&stream, (byte*)playerInput, sizeof(PlayerInput_t));
+    bytestream_read(in, (byte*)out, sizeof(playerInput_t));
 }
