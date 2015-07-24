@@ -379,9 +379,11 @@ void handleMessages(networkUpdate_t update)
 
 			if (!net.inputOnly)
 			{
+				long lastShotTime = player->lastShotTime;
 				if (player == myPlayer)
 				{ // Only take the server's data if it differs greatly from ours
-					if (vectorDistance(myPlayer->pos, net.content.player.pos) > 2.0f)
+					if (vectorDistance(myPlayer->pos, net.content.player.pos) > 2.0f ||
+						myPlayer->health != net.content.player.health)
 					{
 						*player = net.content.player;
 					}
@@ -390,6 +392,9 @@ void handleMessages(networkUpdate_t update)
 				{
 					*player = net.content.player;
 				}
+
+				// Don't overwrite this
+				player->lastShotTime = lastShotTime;
 			}
 			else if (player != myPlayer)
 			{

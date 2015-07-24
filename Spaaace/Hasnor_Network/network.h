@@ -12,6 +12,7 @@ typedef enum {
 } networkMode_t;
 
 typedef enum {
+	SOCKET_TYPE_INACTIVE,
 	SOCKET_TYPE_CLIENT,
 	SOCKET_TYPE_HOST
 } socketType_t;

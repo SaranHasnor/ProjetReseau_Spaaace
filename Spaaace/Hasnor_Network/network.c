@@ -140,6 +140,7 @@ void _setupMaxConnections(uint maxConnections)
 	{
 		_connections[i].id = i;
 		_connections[i].socket = INVALID_SOCKET;
+		_connections[i].type = SOCKET_TYPE_INACTIVE;
 	}
 }
 
@@ -254,8 +255,9 @@ void _closeConnection(networkConnection_t *connection, bool broadcast)
 	sendMessage(NETWORK_MESSAGE_EXIT, -1, broadcast ? -1 : connection->id, temp);
 
 	connection->id = 0;
+	connection->type = SOCKET_TYPE_INACTIVE;
 
-	// FIXME: Closing the socket here means this client won't receive his message
+	// FIXME: Closing the socket here means this client won't always receive his exit message if the socket is already busy
 	_cleanupSocket(&connection->socket);
 }
 
@@ -447,7 +449,6 @@ uint _decodeMessage(bytestream *in, networkMessage_t *out)
 
 void receiveMessages(networkUpdate_t *update)
 {
-	static char buffer[8192];
 	uint i;
 
 	update->messages = NULL;
