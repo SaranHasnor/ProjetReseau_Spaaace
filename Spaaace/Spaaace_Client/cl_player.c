@@ -160,6 +160,25 @@ void createPlayerMesh()
 	addVertex(0.5f, -0.5f, -0.5f, 1.0f, 0.0f);
 	addVertex(0.5f, -0.5f, 0.5f, 1.0f, 1.0f);
 
+	// Fins
+	tempFace = addFace();
+	tempFace->texture = metal;
+	addVertex(-0.5f, 0.5f, -0.5f, 1.0f, 1.0f);
+	addVertex(-0.5f, -0.5f, -0.5f, 1.0f, 0.0f);
+	addVertex(-1.0f, -0.5f, -0.75f, 0.0f, 0.0f);
+	
+	tempFace = addFace();
+	tempFace->texture = metal;
+	addVertex(0.5f, 0.5f, -0.5f, 1.0f, 1.0f);
+	addVertex(0.5f, -0.5f, -0.5f, 1.0f, 0.0f);
+	addVertex(1.0f, -0.5f, -0.75f, 0.0f, 0.0f);
+
+	tempFace = addFace();
+	tempFace->texture = metal;
+	addVertex(0.0f, 0.5f, 0.5f, 0.0f, 1.0f);
+	addVertex(0.0f, -0.5f, 0.5f, 0.0f, 0.0f);
+	addVertex(0.0f, -0.5f, 1.0f, 1.0f, 0.0f);
+
     updateMeshGeometry(playerMeshThirdPerson);
 }
 
